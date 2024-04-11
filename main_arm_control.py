@@ -18,19 +18,35 @@ KEY_CW = 'l'
 KEY_ZP = 'i'
 KEY_ZM = 'k'
 
+KEY_SPEEDP = 't'
+KEY_SPEEDM = 'g'
+KEY_ANGSPEEDP = 'y'
+KEY_ANGSPEEDM = 'h'
+
 KEY_QUIT = 'q'
 
+## POSITION CONTROL
 # Set position increments
-INC_PLANE = 0.01
-INC_HEIGHT = 0.01
-INC_ROT = 0.01
+INC_DELTA_PLANE = 0.01
+INC_DELTA_HEIGHT = 0.01
+INC_DELTA_ROT = 0.01
+
+# increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational
 
 SPEED_L = 3.0 #0.5 #0.25
 ACCEL_L = 0.1 #25
 
-# VARIABLES
-# Current position of the robot
-current_poseL_d = [0, 0, 0, 0, 0, 0]
+
+## SPEED CONTROL
+SPEED_STEP_PLANE = 0.1
+SPEED_STEP_VERT = 0.1
+SPEED_STEP_ROT = 0.1
+
+# speed_plane = 1.0
+# speed_vertical = 1.0
+# speed_rot = 0.1
+
+#speed = [1.0, 1.0, 0.1] # plane, vertical, rotational
 
 
 def setup():
@@ -40,51 +56,119 @@ def setup():
         rtde_c =  rtde_control.RTDEControlInterface(IP_UR5)
         rtde_r = rtde_receive.RTDEReceiveInterface(IP_UR5)
 
-        # Get the current position of the robot
-        current_poseL_d[:] = rtde_r.getActualTCPPose()
     else:
         rtde_c = None
         rtde_r = None
 
-        current_poseL_d[:] = [10, 10, 10, 10, 10, 10]
-
     print('Setup complete. Robot connected.')
 
-    return rtde_c, rtde_r
+    return rtde_c, rtde_r, 
+
+## KEYBOARD CONTROL
+# Alters the setpoint (either position or speed) based on the mode of control
+def alter_setpoint(setpoint, ind, use_speed_control, speed, increment):
+    new_setpoint = setpoint # Note this doesn't copy yet, only creates an alias
+    
+    if use_speed_control:
+        new_setpoint[ind] = speed
+    else:
+        new_setpoint[ind] += increment
+
+    return new_setpoint
 
 
-def loop(rtde_c, rtde_r):
-    ## POLLING LOOP
-    print('About to enter manual control loop. Press q to quit.')
+def alter_setpoint_vel(speed, increment, ind, use_speed_control, delta_setpoint_vel, delta_increment_vel):
+    new_speed = speed # Note this doesn't copy yet, only creates an alias
+    new_increment = increment
+    
+    if use_speed_control:
+        new_speed[ind] += delta_setpoint_vel
+    else:
+        new_increment[ind] += delta_increment_vel
+
+    return new_speed, new_increment
+
+
+# Poll the keyboard and return changes to the desired setpoints
+def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
+    new_setpoint = original_setpoint # Note this doesn't copy yet, only creates an alias
+    new_speed = speed
+    new_increment = increment
+    
+    if keyboard.is_pressed(KEY_XM):
+        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
+
+    elif keyboard.is_pressed(KEY_XP):
+        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
+
+    if keyboard.is_pressed(KEY_YP):
+        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
+
+    elif keyboard.is_pressed(KEY_YM):
+        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
+
+    if keyboard.is_pressed(KEY_ZP):
+        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
+
+    elif keyboard.is_pressed(KEY_ZM):
+        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
+
+    if keyboard.is_pressed(KEY_ACW):
+        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
+
+    elif keyboard.is_pressed(KEY_CW):
+        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
+
+    if keyboard.is_pressed(KEY_SPEEDP):
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+        
+    elif keyboard.is_pressed(KEY_SPEEDM):
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+
+    if keyboard.is_pressed(KEY_ANGSPEEDP):
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
+    
+    elif keyboard.is_pressed(KEY_ANGSPEEDM):
+        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
+    
+    if keyboard.is_pressed(KEY_QUIT): 
+        print('Quit key pressed')
+        new_setpoint = None  # finishing the loop
+
+    return new_setpoint, new_speed, new_increment
+
+## CONTROL SPEED AND POSITION
+def loop_speed_cntrl(rtde_c):
+    speed = [1.0, 1.0, 0.1] # plane, vertical, rotational
+    increment = [0.0, 0.0, 0.0]
+    #current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     
     while True:
-        if keyboard.is_pressed(KEY_XM):
-            current_poseL_d[0] -= INC_PLANE
+        current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
 
-        elif keyboard.is_pressed(KEY_XP):
-            current_poseL_d[0] += INC_PLANE
+        if current_speedL_d is None:
+            break
 
-        elif keyboard.is_pressed(KEY_YP):
-            current_poseL_d[1] += INC_PLANE
+        rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
+        print(current_speedL_d)
 
-        elif keyboard.is_pressed(KEY_YM):
-            current_poseL_d[1] -= INC_PLANE
+        time.sleep(0.2) # Run at 5 Hz
 
-        elif keyboard.is_pressed(KEY_ZP):
-            current_poseL_d[2] += INC_HEIGHT
 
-        elif keyboard.is_pressed(KEY_ZM):
-            current_poseL_d[2] -= INC_HEIGHT
+def loop_pos_cntrl(rtde_c, rtde_r):
+    ## POLLING LOOP
+    speed = [0.0, 0.0, 0.0]
+    increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational increment sizes
+    current_poseL_d = rtde_r.getActualTCPPose()
+    
+    while True:
+        current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
 
-        elif keyboard.is_pressed(KEY_ACW):
-            current_poseL_d[5] += INC_ROT
-
-        elif keyboard.is_pressed(KEY_CW):
-            current_poseL_d[5] -= INC_ROT
-        
-        elif keyboard.is_pressed(KEY_QUIT): 
-            print('Quit key pressed')
-            break  # finishing the loop
+        if current_poseL_d is None:
+            break
 
         # Move to desired setpoint
         # Move asynchronously in cartesian space to target, we specify asynchronous behavior by setting the async parameter to
@@ -93,7 +177,7 @@ def loop(rtde_c, rtde_r):
         rtde_c.moveL(current_poseL_d, SPEED_L, ACCEL_L, False)
         print(current_poseL_d)
 
-        time.sleep(0.01) # Run at 100 Hz
+        time.sleep(0.2) # Run at 5 Hz
         
 
 if __name__ == "__main__":
@@ -101,7 +185,9 @@ if __name__ == "__main__":
     rtde_c, rtde_r = setup()
 
     # LOOP
-    loop(rtde_c, rtde_r)
+    print('About to enter manual control loop. Press q to quit.')
+    #loop_pos_cntrl(rtde_c, rtde_r)
+    loop_speed_cntrl(rtde_c)
 
 
 
