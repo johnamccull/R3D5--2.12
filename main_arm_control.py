@@ -8,15 +8,20 @@ IP_UR5 = "169.254.157.0"
 USE_ROBOT = True
 
 # Keyboard control directions and commands
-KEY_XM = 's'
-KEY_XP = 'f'
-KEY_YM = 'd'
-KEY_YP = 'e'
+KEY_XM = 'f' #'s'
+KEY_XP = 's' #'f'
+KEY_YM = 'e' #'d'
+KEY_YP = 'd' #'e'
 
-KEY_ACW = 'j'
-KEY_CW = 'l'
 KEY_ZP = 'i'
 KEY_ZM = 'k'
+
+KEY_PITCHP = 'u'
+KEY_PITCHM = 'o'
+KEY_ROLLP = 'j'
+KEY_ROLLM = 'l'
+KEY_YAWP = 'm'
+KEY_YAWM = '.'
 
 KEY_SPEEDP = 't'
 KEY_SPEEDM = 'g'
@@ -33,14 +38,21 @@ INC_DELTA_ROT = 0.01
 
 # increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational
 
-SPEED_L = 3.0 #0.5 #0.25
-ACCEL_L = 0.1 #25
+SPEED_L = 0.1 #1.0 #3.0 #0.5 #0.25
+SPEED_ANG = 0.2 #0.1
+ACCEL_L = 1.0 #0.1 #25
+ACCEL_L_STOP = 10
 
 
 ## SPEED CONTROL
 SPEED_STEP_PLANE = 0.1
 SPEED_STEP_VERT = 0.1
 SPEED_STEP_ROT = 0.1
+
+LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
+
+
+
 
 # speed_plane = 1.0
 # speed_vertical = 1.0
@@ -81,10 +93,13 @@ def alter_setpoint_vel(speed, increment, ind, use_speed_control, delta_setpoint_
     new_speed = speed # Note this doesn't copy yet, only creates an alias
     new_increment = increment
     
+    # Make speed increment, do not drop speed below 0 (inverts controls which is unintuitive)
     if use_speed_control:
         new_speed[ind] += delta_setpoint_vel
+        new_speed[ind] = max(new_speed[ind], 0.0)
     else:
         new_increment[ind] += delta_increment_vel
+        new_speed[ind] = max(new_speed[ind], 0.0)
 
     return new_speed, new_increment
 
@@ -113,10 +128,22 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     elif keyboard.is_pressed(KEY_ZM):
         new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
 
-    if keyboard.is_pressed(KEY_ACW):
+    if keyboard.is_pressed(KEY_PITCHP):
+        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
+
+    elif keyboard.is_pressed(KEY_PITCHM):
+        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
+
+    if keyboard.is_pressed(KEY_ROLLP):
+        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
+
+    elif keyboard.is_pressed(KEY_ROLLM):
+        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
+
+    if keyboard.is_pressed(KEY_YAWP):
         new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_CW):
+    elif keyboard.is_pressed(KEY_YAWM):
         new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
 
     if keyboard.is_pressed(KEY_SPEEDP):
@@ -141,21 +168,30 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
 
 ## CONTROL SPEED AND POSITION
 def loop_speed_cntrl(rtde_c):
-    speed = [1.0, 1.0, 0.1] # plane, vertical, rotational
+    speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
     #current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     
+    # Speed control loop
     while True:
-        current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        # Poll keyboard for speed direction and any speed setpoint changes
+        current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
 
         if current_speedL_d is None:
             break
+        
+        # Send speed command (or stop) to robot
+        if USE_ROBOT:
+            # Decelerate faster when stopping
+            if all(v == 0 for v in current_speedL_d):
+                rtde_c.speedStop(ACCEL_L_STOP)
+            else:
+                rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
 
-        rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
         print(current_speedL_d)
 
-        time.sleep(0.2) # Run at 5 Hz
+        time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
 
 
 def loop_pos_cntrl(rtde_c, rtde_r):
@@ -173,11 +209,11 @@ def loop_pos_cntrl(rtde_c, rtde_r):
         # Move to desired setpoint
         # Move asynchronously in cartesian space to target, we specify asynchronous behavior by setting the async parameter to
         # 'True'. Try to set the async parameter to 'False' to observe a default synchronous movement, which cannot be stopped
-        # by the stopL function due to the blocking behaviour.
+        # by the stopL function due to the blocking behaviour. Using 'True' makes it choppy as it sends more moveL commands every time without waiting
         rtde_c.moveL(current_poseL_d, SPEED_L, ACCEL_L, False)
         print(current_poseL_d)
 
-        time.sleep(0.2) # Run at 5 Hz
+        time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
         
 
 if __name__ == "__main__":
@@ -188,6 +224,14 @@ if __name__ == "__main__":
     print('About to enter manual control loop. Press q to quit.')
     #loop_pos_cntrl(rtde_c, rtde_r)
     loop_speed_cntrl(rtde_c)
+
+
+
+
+
+# TODO: prevent going into singularity, OR: if robot is in singularity, get out!!!!!
+# Home position??
+
 
 
 
