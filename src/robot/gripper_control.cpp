@@ -58,3 +58,5 @@ int degToUs (float angleOffset, float startingAngle) {
 void clawAngle (float angleOffset) {
     servo1.writeMicroseconds(degToUs(angleOffset/2,L_STARTING_ANGLE));
 }
+
+// hello this is a test
