@@ -1,5 +1,6 @@
 import rtde_control, rtde_receive
 import time
+import PS4_Control as ps4
 import keyboard 
 
 # PARAMETERS
@@ -39,7 +40,10 @@ INC_DELTA_ROT = 0.01
 # increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational
 
 SPEED_L = 0.1 #1.0 #3.0 #0.5 #0.25
+SPEED_L_MAX = 0.4
 SPEED_ANG = 0.2 #0.1
+SPEED_ANG_MAX = 0.4
+
 ACCEL_L = 1.0 #0.1 #25
 ACCEL_L_STOP = 10
 
@@ -72,9 +76,12 @@ def setup():
         rtde_c = None
         rtde_r = None
 
+    # Setup the ps4 controller
+    joystick = ps4.controller_init()
+
     print('Setup complete. Robot connected.')
 
-    return rtde_c, rtde_r, 
+    return rtde_c, rtde_r, joystick
 
 ## KEYBOARD CONTROL
 # Alters the setpoint (either position or speed) based on the mode of control
@@ -167,7 +174,7 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     return new_setpoint, new_speed, new_increment
 
 ## CONTROL SPEED AND POSITION
-def loop_speed_cntrl(rtde_c):
+def loop_speed_cntrl(rtde_c, joystick):
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
     #current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -176,7 +183,9 @@ def loop_speed_cntrl(rtde_c):
     while True:
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
-        current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
+        #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
+        current_speedL_d = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, SPEED_ANG_MAX)
+        current_speedL_d[5] = 0.0 # TODO: REMOVE ONCE BARAN FIXES MAPPING
 
         if current_speedL_d is None:
             break
@@ -218,12 +227,12 @@ def loop_pos_cntrl(rtde_c, rtde_r):
 
 if __name__ == "__main__":
     # SETUP
-    rtde_c, rtde_r = setup()
+    rtde_c, rtde_r, joystick = setup()
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
     #loop_pos_cntrl(rtde_c, rtde_r)
-    loop_speed_cntrl(rtde_c)
+    loop_speed_cntrl(rtde_c, joystick)
 
 
 

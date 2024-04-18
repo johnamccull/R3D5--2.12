@@ -1,6 +1,8 @@
 import pygame
 import numpy as np
 
+PRINT = False
+
 def smooth_data(data, threshold=0.1):
     """
     Smooths joystick data and removes drift.
@@ -63,23 +65,31 @@ def rotation_matrix_yaw(angle):
                      [0, 0, 1]])
 
 
-# Initialize pygame
-pygame.init()
-pygame.joystick.init()
+# Initialize ps4 controller
+def controller_init():
+    # Initialize pygame
+    pygame.init()
+    pygame.joystick.init()
 
-# Check for connected joysticks
-joystick_count = pygame.joystick.get_count()
-if joystick_count == 0:
-    print("No joystick connected.")
-    quit()
+    # Check for connected joysticks
+    joystick_count = pygame.joystick.get_count()
+    if joystick_count == 0:
+        print("No joystick connected.")
+        quit()
 
-# Get the first joystick
-joystick = pygame.joystick.Joystick(0)
-joystick.init()
+    # Get the first joystick
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
 
-# Main loop
-running = True
-while running:
+    return joystick
+
+
+# Get input from the PS4 controller
+def get_controller_input(joystick):
+    # Main loop
+    # running = True
+    # while running:
+
     # Check for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -91,8 +101,9 @@ while running:
     buttons = [joystick.get_button(i) for i in range(joystick.get_numbuttons())]
 
     # Print axes and buttons
-    #print("Axes:", axes)
-    #print("Buttons:", buttons)
+    if PRINT:
+        print("Axes:", axes)
+        print("Buttons:", buttons)
 
     #Group to PS4 Layout
 
@@ -101,12 +112,12 @@ while running:
     sq_but = buttons[2]
     cir_but = buttons[1]
     x_but = buttons[0]
-    up_but = buttons[11]
-    l_but = buttons[13]
-    r_but = buttons[14]
-    d_but = buttons[12]
+    #up_but = buttons[11]
+    #l_but = buttons[13]
+    #r_but = buttons[14]
+    #d_but = buttons[12]
     rb_pad = [tri_but,sq_but,cir_but,x_but]
-    lb_pad = [up_but,l_but,r_but,d_but]
+    #lb_pad = [up_but,l_but,r_but,d_but]
     options = buttons[6]
     share = buttons[4]
     touchpad = buttons[len(buttons)-1]
@@ -135,20 +146,22 @@ while running:
     else:
         stateList = [Vx,Vy,Vz,Rx,Ry,Rz,"tool"]
 
-    #print("Right Button Pad",rb_pad)
-    #print("Left Button Pad",lb_pad)
-    #print("Options",options)
-    #print("Share",share)
-    #print("Touchpad",touchpad)
-    #print("R/L",rl_buttons)
-    #print("R Pad",r_pad)
-    #print("L Pad",l_pad)
-    #print(r2)
-    #print(stateList)
+    #if PRINT:
+        #print("Right Button Pad",rb_pad)
+        #print("Left Button Pad",lb_pad)
+        #print("Options",options)
+        #print("Share",share)
+        #print("Touchpad",touchpad)
+        #print("R/L",rl_buttons)
+        #print("R Pad",r_pad)
+        #print("L Pad",l_pad)
+        #print(r2)
+        #print(stateList)
 
     if stateList[-1] == "base":
         baseStateList = stateList[:-1]
-        print("No transform")
+        if PRINT:
+            print("No transform")
         baseStateVector = np.array(baseStateList)
     else:
         R_rol = 0#get roll
@@ -165,16 +178,43 @@ while running:
                             [stateList[2]]])
 
         omega_dot_e = np.array([[stateList[3]],
-                               [stateList[4]],
-                               [stateList[5]]])
+                            [stateList[4]],
+                            [stateList[5]]])
         
         x_dot_0 = np.matmul(R_e,x_dot_e)
         omega_dot_0 = np.matmul(R_e,omega_dot_e)
 
         baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
-        print("Transformation")
 
-    print(baseStateList) #baseStateList is the final output
+        if PRINT:
+            print("Transformation")
+
+    if PRINT:
+        print(baseStateList) #baseStateList is the final output
 
     # Adjust this to control the loop speed
-    pygame.time.wait(100)
+    #pygame.time.wait(100)
+
+    return stateList
+
+# Scale the state list to give actual velocities
+def scale_state_list(stateList, v_max_planar, v_max_ang):
+    #print(stateList)
+
+    # Planar
+    stateList[0:3] = [x * v_max_planar for x in stateList[0:3]] #stateList[0::2]*v_max_planar
+
+    # Angular
+    stateList[3:6] = [x * v_max_ang for x in stateList[3:6]] #stateList[0::2]*v_max_ang
+
+    #print(stateList)
+
+    return stateList
+
+# Get the scaled inputs from the controller
+def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
+    stateList = get_controller_input(joystick)
+
+    stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
+
+    return stateList_scaled
