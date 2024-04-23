@@ -64,6 +64,32 @@ def rotation_matrix_yaw(angle):
                      [np.sin(angle), np.cos(angle), 0],
                      [0, 0, 1]])
 
+def coord_transform(roll, pitch, yaw, R):
+    """
+    Perform coordinate transform from tool to base coordinates.
+
+    Args:
+    - roll,pitch,yaw (float): Anglular velocity of rotation in radians/sec.
+
+    Returns:
+    - Rotation matrix (numpy array).
+    """
+    R_rol = 0#get roll
+    R_pit = 0#get pitch
+    R_yaw = 0#get yaw
+    roll_matrix = rotation_matrix_roll(R_rol)
+    pitch_matrix = rotation_matrix_pitch(R_pit)
+    yaw_matrix = rotation_matrix_yaw(R_yaw)
+
+    R_e = np.matmul(yaw_matrix, np.matmul(pitch_matrix, roll_matrix))
+
+    omega_dot_e = np.array([[roll],
+                            [pitch],
+                            [yaw]])
+    
+    omega_dot_0 = np.matmul(R_e,omega_dot_e)
+    return omega_dot_0
+
 
 # Initialize ps4 controller
 def controller_init():
@@ -129,18 +155,35 @@ def get_controller_input(joystick):
     l_pad = [axes[0],axes[1],buttons[7]]
     r_pad = [axes[2],axes[3],buttons[8]]
     
-    Vx = l_pad[0] #Left Joystick 
-    Vy = -l_pad[1]
-    Vz = 0
-    Rx = -r_pad[1]
+    #Planar Motion Assingment
+    Vx = l_pad[0] #Left Joystick Horizontal Axis
+    Vy = -l_pad[1] #Left Joystick Verical Axis
+    Vz = r_pad[0] #Right Joystick Vertical Axis
+    
+    #Rotational Motion Assingment 
+    Rx = 0
     Ry = 0
-    Rz = -r_pad[0]
+    Rz = 0
 
-    if r1:
+    #Assign rotation in X to square and circle buttons
+    if cir_but: 
+        Ry = 1.0
+    elif sq_but:
+        Ry = -1.0
+
+    #Assign rotation in Y to R1 and L1 buttons
+    if r1: 
         Ry = 1.0
     elif l1:
         Ry = -1.0
 
+    #Assign rotation in Z to triangle and x buttons
+    if tri_but: 
+        Ry = 1.0
+    elif x_but:
+        Ry = -1.0
+
+    #Might not need anymore
     if l2 == -1.0:
         stateList = [Vx,Vy,Vz,Rx,Ry,Rz,"base"]
     else:
@@ -159,10 +202,17 @@ def get_controller_input(joystick):
         #print(stateList)
 
     if stateList[-1] == "base":
-        baseStateList = stateList[:-1]
+        x_dot_0 = np.array([[stateList[0]],
+                            [stateList[1]],
+                            [stateList[2]]])
+        omega_dot_0 = np.array([[stateList[3]],
+                            [stateList[4]],
+                            [stateList[5]]])
+        
+        baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
         if PRINT:
             print("No transform")
-        baseStateVector = np.array(baseStateList)
+
     else:
         R_rol = 0#get roll
         R_pit = 0#get pitch
@@ -173,16 +223,11 @@ def get_controller_input(joystick):
 
         R_e = np.matmul(yaw_matrix, np.matmul(pitch_matrix, roll_matrix))
 
-        x_dot_e = np.array([[stateList[0]],
+        x_dot_0 = np.array([[stateList[0]],
                             [stateList[1]],
                             [stateList[2]]])
 
-        omega_dot_e = np.array([[stateList[3]],
-                            [stateList[4]],
-                            [stateList[5]]])
-        
-        x_dot_0 = np.matmul(R_e,x_dot_e)
-        omega_dot_0 = np.matmul(R_e,omega_dot_e)
+        omega_dot_0 = coord_transform(stateList[3],stateList[4],stateList[5],Re)
 
         baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
 
