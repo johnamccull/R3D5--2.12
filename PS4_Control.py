@@ -167,9 +167,9 @@ def get_controller_input(joystick):
 
     #Assign rotation in X to square and circle buttons
     if cir_but: 
-        Ry = 1.0
+        Rx = 1.0
     elif sq_but:
-        Ry = -1.0
+        Rx = -1.0
 
     #Assign rotation in Y to R1 and L1 buttons
     if r1: 
@@ -179,9 +179,9 @@ def get_controller_input(joystick):
 
     #Assign rotation in Z to triangle and x buttons
     if tri_but: 
-        Ry = 1.0
+        Rz = 1.0
     elif x_but:
-        Ry = -1.0
+        Rz = -1.0
 
     #Might not need anymore
     if l2 == -1.0:
