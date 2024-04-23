@@ -44,6 +44,9 @@ SPEED_L_MAX = 0.4
 SPEED_ANG = 0.2 #0.1
 SPEED_ANG_MAX = 0.4
 
+SPEED_J = 1.05 #default speed and acceleration for joins
+ACCEL_J = 1.4
+
 ACCEL_L = 1.0 #0.1 #25
 ACCEL_L_STOP = 10
 
@@ -54,6 +57,8 @@ SPEED_STEP_VERT = 0.1
 SPEED_STEP_ROT = 0.1
 
 LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
+
+Q_HOME = [1, 1, 1, 1, 1, 1] #vector of 6
 
 
 
@@ -224,10 +229,16 @@ def loop_pos_cntrl(rtde_c, rtde_r):
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
         
+#move to home position (no singularity)
+def move_home(q_desired, speed, acceleration, asynchronous=False):
+    rtde_c.moveJ(q_desired, speed, acceleration, asynchronous)
+    return
+
 
 if __name__ == "__main__":
     # SETUP
     rtde_c, rtde_r, joystick = setup()
+    move_home(Q_HOME, SPEED_J, ACCEL_J, False)
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
