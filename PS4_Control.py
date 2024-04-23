@@ -227,7 +227,7 @@ def get_controller_input(joystick):
                             [stateList[1]],
                             [stateList[2]]])
 
-        omega_dot_0 = coord_transform(stateList[3],stateList[4],stateList[5],Re)
+        omega_dot_0 = coord_transform(stateList[3],stateList[4],stateList[5],R_e)
 
         baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
 

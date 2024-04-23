@@ -190,7 +190,7 @@ def loop_speed_cntrl(rtde_c, joystick):
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
         current_speedL_d = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, SPEED_ANG_MAX)
-        current_speedL_d[5] = 0.0 # TODO: REMOVE ONCE BARAN FIXES MAPPING
+        current_speedL_d[2] = 0.0 # TODO: REMOVE ONCE BARAN FIXES MAPPING
 
         if current_speedL_d is None:
             break
