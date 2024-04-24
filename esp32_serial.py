@@ -2,7 +2,7 @@ import serial
 import time
 
 # Configuration parameters
-port = '/dev/ttyUSB0'  # Replace 'COMx' with the correct port number
+port = '/dev/ttyACM0'#'/dev/ttyUSB0'  # Replace 'COMx' with the correct port number
 baud_rate = 115200
 timeout = 2  # Timeout for serial communication
 
@@ -25,10 +25,10 @@ def send_command(command):
 # Example usage
 try:
     while True:
-        cmd = input("Enter command (OPEN (v), CLOSE (c), MAG_ON (m), MAG_OFF (v), or q to quit): ")
+        cmd = input("Enter command (OPEN (v), CLOSE (c), MAG_ON (m), MAG_OFF (n), or q to quit): ")
         if cmd.lower() == 'q':
             break
-        elif cmd in ['v', 'c', 'm', 'v']:
+        elif cmd in ['v', 'c', 'm', 'n']:
             send_command(cmd)
         else:
             print("Invalid command. Please try again.")

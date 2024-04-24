@@ -26,7 +26,7 @@ Servo servo2;
 
 int degToUs (float angleOffset, float startingAngle);
 void clawAngle (float angleOffset);
-void turnOnMagnet(float time);
+void turnOnMagnet (bool on);
 
 UMS3 ums3;
 
@@ -72,10 +72,10 @@ void loop() {
         command.trim();  // Remove any trailing newline or whitespace
 
         if (command == CLAW_OPEN) {  // Open claw
-            clawAngle(350);  // Open claw angle
+            clawAngle(90);  // Open claw angle
             Serial.println("Claw Opened");
         } else if (command == CLAW_CLOSE) { // Close claw
-            clawAngle(90);   // Close claw angle
+            clawAngle(350);   // Close claw angle
             Serial.println("Claw Closed");
         } else if (command == MAG_ON) { // Turn on electromagnet
             turnOnMagnet(true);

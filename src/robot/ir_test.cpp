@@ -6,9 +6,11 @@ Adafruit_AMG88xx amg;
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 void setup() {
-    Serial.begin(9600);
-    Serial.println(F("AMG88xx pixels"));
+    Serial.begin(115200);  // Serial.begin(9600);
+    //Serial.println("Setup complete");
+    //Serial.println(F("AMG88xx pixels"));
 
+    Serial.println("Setup started");
     bool status;
     
     // default settings
@@ -17,10 +19,8 @@ void setup() {
         Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
         while (1);
     }
-    
-    Serial.println("-- Pixels Test --");
 
-    Serial.println();
+    Serial.println("Setup complete");
 
     delay(100); // let sensor boot up
 }
@@ -28,17 +28,19 @@ void setup() {
 
 void loop() { 
     //read all the pixels
-    amg.readPixels(pixels);
+    Serial.print("Looping");
 
-    Serial.print("[");
-    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      Serial.print(pixels[i-1]);
-      Serial.print(", ");
-      if( i%8 == 0 ) Serial.println();
-    }
-    Serial.println("]");
-    Serial.println();
+    // amg.readPixels(pixels);
 
-    //delay a second
-    delay(1000);
+    // Serial.print("[");
+    // for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+    //   Serial.print(pixels[i-1]);
+    //   Serial.print(", ");
+    //   if( i%8 == 0 ) Serial.println();
+    // }
+    // Serial.println("]");
+    // Serial.println();
+
+    // //delay a second
+    // delay(1000);
 }
