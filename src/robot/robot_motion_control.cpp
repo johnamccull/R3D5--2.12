@@ -18,21 +18,28 @@ double currPhiR = 0;
 double prevPhiL = 0;
 double prevPhiR = 0;
 
-// Sets the desired wheel velocities based on desired robot velocity in m/s
-// and k curvature in 1/m representing 1/(radius of curvature)
-void setWheelVelocities(float robotVelocity, float k){
-    double left = (robotVelocity - k*b*robotVelocity)/r;
-    double right = 2*robotVelocity/r  - left;
-    updateSetpoints(left, right);
-}
-
 // Makes robot follow a trajectory
 void followTrajectory() {
 
     if (freshWirelessData) {
-        double forward = abs(controllerMessage.joystick1.y) < 0.1 ? 0 : mapDouble(controllerMessage.joystick1.y, -1, 1, -MAX_FORWARD, MAX_FORWARD);
-        double turn = abs(controllerMessage.joystick1.x) < 0.1 ? 0 : mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_TURN, MAX_TURN);
-        updateSetpoints(forward - turn, forward + turn);
+        double forward = abs(controllerMessage.joystick1.y) < 0.01 ? 0 : mapDouble(controllerMessage.joystick1.y, -1, 1, -MAX_FORWARD, MAX_FORWARD);
+        /*if (controllerMessage.joystick1.y < 0.5 && controllerMessage.joystick1.y >= 0.01) {
+            forward = MAX_FORWARD/4;
+        }
+        else if (controllerMessage.joystick1.y <= -0.01 && controllerMessage.joystick1.y > -0.5) {
+            forward = -MAX_FORWARD/4;
+        }*/
+        double turn = abs(controllerMessage.joystick1.x) < 0.01 ? 0 : mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_TURN, MAX_TURN);
+        /*if (controllerMessage.joystick1.x > 0.5 && controllerMessage.joystick1.x >= 0.01) {
+            turn = MAX_TURN/4;
+        }
+        else if (controllerMessage.joystick1.x <= -0.01 && controllerMessage.joystick1.x > -0.5) {
+            turn = -MAX_TURN/4;
+        }*/
+        double left = forward - turn;
+        double right = forward + turn;
+        
+        updateSetpoints(left, right);
     }
 
 }

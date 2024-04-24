@@ -19,7 +19,7 @@ void loop() {
 
     // Update PID at 200Hz
     EVERY_N_MILLIS(5) {
-        updatePIDs();
+        updateControlEffort();
     }
 
     // Send and print robot values at 200Hz
