@@ -6,7 +6,7 @@ import keyboard
 # PARAMETERS
 # Robot IP address
 IP_UR5 = "169.254.157.0"
-USE_ROBOT = True
+USE_ROBOT = True #False #True
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
@@ -184,12 +184,19 @@ def loop_speed_cntrl(rtde_c, joystick):
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, SPEED_ANG_MAX)
-        current_speedL_d[2] = 0.0 # TODO: REMOVE ONCE BARAN FIXES MAPPING
-
+        current_speedL_d, speedButtons = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        
         if current_speedL_d is None:
             break
         
+        # Adjust angular speed
+        if speedButtons[0] == 1:
+            speed[2] -= SPEED_STEP_ROT
+            speed[2] = max(speed[2], 0.0)
+        elif speedButtons[1] == 1:
+            speed[2] += SPEED_STEP_ROT
+            speed[2] = min(speed[2], SPEED_ANG_MAX)
+
         # Send speed command (or stop) to robot
         if USE_ROBOT:
             # Decelerate faster when stopping
@@ -240,6 +247,8 @@ if __name__ == "__main__":
 
 # TODO: prevent going into singularity, OR: if robot is in singularity, get out!!!!!
 # Home position??
+# Allow joint control through keyboard??
+# Perhaps change the orientation to just wrist control?? And and x-y-z just to wrist-3 
 
 
 

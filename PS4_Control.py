@@ -134,8 +134,8 @@ def get_controller_input(joystick):
     #Group to PS4 Layout
 
     # Right Button Pad
-    tri_but = buttons[3]
-    sq_but = buttons[2]
+    tri_but = buttons[2] #buttons[3]
+    sq_but = buttons[3] #buttons[2]
     cir_but = buttons[1]
     x_but = buttons[0]
     #up_but = buttons[11]
@@ -147,18 +147,18 @@ def get_controller_input(joystick):
     options = buttons[6]
     share = buttons[4]
     touchpad = buttons[len(buttons)-1]
-    r1 = buttons[10]
-    r2 = axes[len(axes)-1]
-    l1 = buttons[9]
-    l2 = axes[len(axes)-2]
+    r1 = buttons[5] #buttons[10]
+    r2 = buttons[7] #axes[len(axes)-1]
+    l1 = buttons[4] #buttons[9]
+    l2 = buttons[6] #axes[len(axes)-2]
     rl_buttons = [r1,l1,r2,l2]
-    l_pad = [axes[0],axes[1],buttons[7]]
-    r_pad = [axes[2],axes[3],buttons[8]]
+    l_pad = [axes[0],axes[1],buttons[11]] #buttons[7]
+    r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
     
     #Planar Motion Assingment
-    Vx = l_pad[0] #Left Joystick Horizontal Axis
-    Vy = -l_pad[1] #Left Joystick Verical Axis
-    Vz = r_pad[0] #Right Joystick Vertical Axis
+    Vx = -l_pad[0] #Left Joystick Horizontal Axis
+    Vy = l_pad[1] #Left Joystick Verical Axis
+    Vz = -r_pad[1] #Right Joystick Vertical Axis
     
     #Rotational Motion Assingment 
     Rx = 0
@@ -240,7 +240,9 @@ def get_controller_input(joystick):
     # Adjust this to control the loop speed
     #pygame.time.wait(100)
 
-    return stateList
+    speedButtons = [l_pad[2], r_pad[2]]
+
+    return stateList, speedButtons
 
 # Scale the state list to give actual velocities
 def scale_state_list(stateList, v_max_planar, v_max_ang):
@@ -258,8 +260,16 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
 
 # Get the scaled inputs from the controller
 def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
-    stateList = get_controller_input(joystick)
+    stateList, speedButtons = get_controller_input(joystick)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 
-    return stateList_scaled
+    return stateList_scaled, speedButtons
+
+
+
+
+
+# TODO: 
+# pulling l2 to make in 'tool' doesn't work? -> make it pressing '
+# 
