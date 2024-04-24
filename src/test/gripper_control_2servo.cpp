@@ -15,7 +15,7 @@
 #define MIN_US 500
 #define MAX_US 2500
 
-MotorDriver motor(B_DIR1, B_PWM1, 0);
+MotorDriver electroMagnet(B_DIR1, B_PWM1, 0);
 Servo servo1;
 Servo servo2;
 
@@ -37,7 +37,7 @@ void setup() {
 	ESP32PWM::allocateTimer(0);
 	ESP32PWM::allocateTimer(1);
 	Serial.begin(115200);
-    motor.setup();
+    electroMagnet.setup();
 	servo1.setPeriodHertz(50);      // Standard 50hz servo
 	servo2.setPeriodHertz(50);      // Standard 50hz servo
     servo1.attach(SERVO_1_PIN, MIN_US, MAX_US);
@@ -77,12 +77,12 @@ void clawAngle (float angleOffset) {
 //Turn on the magnet function 
 void turnOnMagnet (float time) {
     Serial.println("Moving Forward at full speed");
-    motor.drive(1.0); // 100% duty cycle
+    electroMagnet.drive(1.0); // 100% duty cycle
     delay(time);
 
     // Stop the motor
     Serial.println("Stopping");
-    motor.drive(0.0); // 0% duty cycle
+    electroMagnet.drive(0.0); // 0% duty cycle
     delay(time);
 }
 
