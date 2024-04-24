@@ -5,14 +5,20 @@ import math
 # PARAMETERS
 # Robot IP address
 IP_UR5 = "169.254.157.0"
+<<<<<<< HEAD
 USE_ROBOT = False #True
 USE_CONTROLLER = True
+USE_GRIPPER = False
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
 
 if not USE_CONTROLLER:
     import keyboard 
+=======
+USE_ROBOT = True 
+
+>>>>>>> c3897982b6b1aab566b514d336c302efac689d18
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
@@ -43,8 +49,6 @@ INC_DELTA_PLANE = 0.01
 INC_DELTA_HEIGHT = 0.01
 INC_DELTA_ROT = 0.01
 
-# increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational
-
 SPEED_L = 0.1 #1.0 #3.0 #0.5 #0.25
 SPEED_L_MAX = 0.4
 SPEED_ANG = 0.2 #0.1
@@ -67,13 +71,6 @@ LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0]#[90.0, -60.0, 40.0, -50, -90.0, 0.0] # Home position in deg
 
 
-# speed_plane = 1.0
-# speed_vertical = 1.0
-# speed_rot = 0.1
-
-#speed = [1.0, 1.0, 0.1] # plane, vertical, rotational
-
-
 def setup():
     # Connect to the robot
     if USE_ROBOT:
@@ -84,6 +81,12 @@ def setup():
     else:
         rtde_c = None
         rtde_r = None
+
+    # Connect to the gripper/ESP32 through serial interface
+    # if USE_GRIPPER:
+
+    # else: 
+    #     pass
 
     # Setup the ps4 controller
     joystick = ps4.controller_init()
@@ -214,6 +217,10 @@ def loop_speed_cntrl(rtde_c, joystick):
             else:
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
 
+        # Send open/close or electromagnet on/off command to gripper
+        # if USE_GRIPPER:
+        #     pass
+
         print(current_speedL_d)
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
@@ -263,11 +270,11 @@ if __name__ == "__main__":
 
 
 # TODO: prevent going into singularity, OR: if robot is in singularity, get out!!!!!
-# Home position??
+# Home position -> only go to home when press button
 # Allow joint control through keyboard??
 # Perhaps change the orientation to just wrist control?? And and x-y-z just to wrist-3 
 
-
+# Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
 
 
 # Perhaps: move asynchronously parallel to windows of rubble until high IR detected and stop there? or store highest IR value and move back to that
