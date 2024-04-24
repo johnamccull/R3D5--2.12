@@ -5,9 +5,10 @@
 #include <ESP32Encoder.h>
 //counts for gobilda motors
 //https://www.gobilda.com/yellow-jacket-planetary-gear-motors/
-#define CPR_30_RPM 5281.1
-#define CPR_60_RPM 2786.2
-#define CPR_312_RPM 537.7
+// rounded to nearest int
+#define CPR_30_RPM 5282 // 5281.1 
+#define CPR_60_RPM 2786 // 2786.2
+#define CPR_312_RPM 538 // 537.7
 class EncoderVelocity {
 public:
   // Constructor: Initializes with the given pins and counts per revolution (CPR)

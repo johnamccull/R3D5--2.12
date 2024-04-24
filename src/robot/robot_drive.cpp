@@ -11,7 +11,7 @@ MotorDriver motors[NUM_MOTORS] = { {A_DIR1, A_PWM1, 0}, {A_DIR2, A_PWM2, 1},
 EncoderVelocity encoders[NUM_MOTORS] = { {ENCODER1_A_PIN, ENCODER1_B_PIN, CPR_312_RPM, 0.2},
                                          {ENCODER2_A_PIN, ENCODER2_B_PIN, CPR_312_RPM, 0.2},
                                          {ENCODER3_A_PIN, ENCODER3_B_PIN, CPR_312_RPM, 0.2}, 
-                                         {ENCODER4_A_PIN, ENCODER4_B_PIN, CPR_312_RPM, 0.2} };
+                                         {ENCODER4_A_PIN, ENCODER4_B_PIN, CPR_312_RPM, 0.2}};
 
 double setpoints[NUM_MOTORS] = {0, 0, 0, 0};
 double velocities[NUM_MOTORS] = {0, 0, 0, 0};

@@ -1,4 +1,3 @@
-// EveryNMillis.h
 #ifndef EVERY_N_MILLIS_H
 #define EVERY_N_MILLIS_H
 
@@ -6,22 +5,25 @@
 
 class EveryNMillis {
 public:
-    EveryNMillis(unsigned long interval) : interval(interval), prevMillis(0) {}
+    EveryNMillis(unsigned long interval) : intervalMillis(interval), previousMillis(0) {}
 
-    bool update() {
-        unsigned long currentMillis = millis();
-        if ((unsigned long)(currentMillis - prevMillis) >= interval) {
-            prevMillis = currentMillis;
+    bool shouldRun(unsigned long currentMillis) {
+        if (currentMillis - previousMillis >= intervalMillis) {
+            previousMillis = currentMillis;
             return true;
         }
         return false;
     }
-
+    
 private:
-    unsigned long interval;
-    unsigned long prevMillis;
+    unsigned long previousMillis;
+    unsigned long intervalMillis;
 };
 
-#define EVERY_N_MILLIS(n) for (static EveryNMillis _timer(n); _timer.update(); )
+#define CONCAT_INTERNAL(x, y) x##y
+#define CONCAT(x, y) CONCAT_INTERNAL(x, y)
+#define EVERY_N_MILLIS(N) \
+    static EveryNMillis CONCAT(everyNMillis_, __LINE__)(N); \
+    if (CONCAT(everyNMillis_, __LINE__).shouldRun(millis()))
 
-#endif // EVERY_N_MILLIS_H
+#endif
