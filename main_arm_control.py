@@ -2,6 +2,7 @@ import rtde_control, rtde_receive
 import time
 import PS4_Control as ps4
 import keyboard 
+import math
 
 # PARAMETERS
 # Robot IP address
@@ -58,9 +59,7 @@ SPEED_STEP_ROT = 0.1
 
 LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 
-Q_HOME = [1, 1, 1, 1, 1, 1] #vector of 6
-
-
+Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0]#[90.0, -60.0, 40.0, -50, -90.0, 0.0] # Home position in deg
 
 
 # speed_plane = 1.0
