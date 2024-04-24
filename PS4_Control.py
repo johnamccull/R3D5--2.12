@@ -64,6 +64,32 @@ def rotation_matrix_yaw(angle):
                      [np.sin(angle), np.cos(angle), 0],
                      [0, 0, 1]])
 
+def coord_transform(roll, pitch, yaw, R):
+    """
+    Perform coordinate transform from tool to base coordinates.
+
+    Args:
+    - roll,pitch,yaw (float): Anglular velocity of rotation in radians/sec.
+
+    Returns:
+    - Rotation matrix (numpy array).
+    """
+    R_rol = 0#get roll
+    R_pit = 0#get pitch
+    R_yaw = 0#get yaw
+    roll_matrix = rotation_matrix_roll(R_rol)
+    pitch_matrix = rotation_matrix_pitch(R_pit)
+    yaw_matrix = rotation_matrix_yaw(R_yaw)
+
+    R_e = np.matmul(yaw_matrix, np.matmul(pitch_matrix, roll_matrix))
+
+    omega_dot_e = np.array([[roll],
+                            [pitch],
+                            [yaw]])
+    
+    omega_dot_0 = np.matmul(R_e,omega_dot_e)
+    return omega_dot_0
+
 
 # Initialize ps4 controller
 def controller_init():
@@ -108,8 +134,8 @@ def get_controller_input(joystick):
     #Group to PS4 Layout
 
     # Right Button Pad
-    tri_but = buttons[3]
-    sq_but = buttons[2]
+    tri_but = buttons[2] #buttons[3]
+    sq_but = buttons[3] #buttons[2]
     cir_but = buttons[1]
     x_but = buttons[0]
     #up_but = buttons[11]
@@ -121,26 +147,43 @@ def get_controller_input(joystick):
     options = buttons[6]
     share = buttons[4]
     touchpad = buttons[len(buttons)-1]
-    r1 = buttons[10]
-    r2 = axes[len(axes)-1]
-    l1 = buttons[9]
-    l2 = axes[len(axes)-2]
+    r1 = buttons[5] #buttons[10]
+    r2 = buttons[7] #axes[len(axes)-1]
+    l1 = buttons[4] #buttons[9]
+    l2 = buttons[6] #axes[len(axes)-2]
     rl_buttons = [r1,l1,r2,l2]
-    l_pad = [axes[0],axes[1],buttons[7]]
-    r_pad = [axes[2],axes[3],buttons[8]]
+    l_pad = [axes[0],axes[1],buttons[11]] #buttons[7]
+    r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
     
-    Vx = l_pad[0] #Left Joystick 
-    Vy = -l_pad[1]
-    Vz = 0
-    Rx = -r_pad[1]
+    #Planar Motion Assingment
+    Vx = -l_pad[0] #Left Joystick Horizontal Axis
+    Vy = l_pad[1] #Left Joystick Verical Axis
+    Vz = -r_pad[1] #Right Joystick Vertical Axis
+    
+    #Rotational Motion Assingment 
+    Rx = 0
     Ry = 0
-    Rz = -r_pad[0]
+    Rz = 0
 
-    if r1:
+    #Assign rotation in X to square and circle buttons
+    if cir_but: 
+        Rx = 1.0
+    elif sq_but:
+        Rx = -1.0
+
+    #Assign rotation in Y to R1 and L1 buttons
+    if r1: 
         Ry = 1.0
     elif l1:
         Ry = -1.0
 
+    #Assign rotation in Z to triangle and x buttons
+    if tri_but: 
+        Rz = 1.0
+    elif x_but:
+        Rz = -1.0
+
+    #Might not need anymore
     if l2 == -1.0:
         stateList = [Vx,Vy,Vz,Rx,Ry,Rz,"base"]
     else:
@@ -159,10 +202,17 @@ def get_controller_input(joystick):
         #print(stateList)
 
     if stateList[-1] == "base":
-        baseStateList = stateList[:-1]
+        x_dot_0 = np.array([[stateList[0]],
+                            [stateList[1]],
+                            [stateList[2]]])
+        omega_dot_0 = np.array([[stateList[3]],
+                            [stateList[4]],
+                            [stateList[5]]])
+        
+        baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
         if PRINT:
             print("No transform")
-        baseStateVector = np.array(baseStateList)
+
     else:
         R_rol = 0#get roll
         R_pit = 0#get pitch
@@ -173,16 +223,11 @@ def get_controller_input(joystick):
 
         R_e = np.matmul(yaw_matrix, np.matmul(pitch_matrix, roll_matrix))
 
-        x_dot_e = np.array([[stateList[0]],
+        x_dot_0 = np.array([[stateList[0]],
                             [stateList[1]],
                             [stateList[2]]])
 
-        omega_dot_e = np.array([[stateList[3]],
-                            [stateList[4]],
-                            [stateList[5]]])
-        
-        x_dot_0 = np.matmul(R_e,x_dot_e)
-        omega_dot_0 = np.matmul(R_e,omega_dot_e)
+        omega_dot_0 = coord_transform(stateList[3],stateList[4],stateList[5],R_e)
 
         baseStateList = np.vstack((x_dot_0, omega_dot_0)).flatten()
 
@@ -195,7 +240,9 @@ def get_controller_input(joystick):
     # Adjust this to control the loop speed
     #pygame.time.wait(100)
 
-    return stateList
+    speedButtons = [l_pad[2], r_pad[2]]
+
+    return stateList, speedButtons
 
 # Scale the state list to give actual velocities
 def scale_state_list(stateList, v_max_planar, v_max_ang):
@@ -213,8 +260,14 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
 
 # Get the scaled inputs from the controller
 def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
-    stateList = get_controller_input(joystick)
+    stateList, speedButtons = get_controller_input(joystick)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 
-    return stateList_scaled
+    return stateList_scaled, speedButtons
+
+
+
+# TODO: 
+# pulling l2 to make in 'tool' doesn't work? -> make it pressing '
+# 

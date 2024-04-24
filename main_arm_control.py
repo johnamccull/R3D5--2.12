@@ -1,12 +1,20 @@
-import rtde_control, rtde_receive
 import time
 import PS4_Control as ps4
-import keyboard 
+import math
 
 # PARAMETERS
 # Robot IP address
 IP_UR5 = "169.254.157.0"
-USE_ROBOT = True
+USE_ROBOT = False #True
+USE_CONTROLLER = True
+USE_GRIPPER = False
+
+if USE_ROBOT:
+    import rtde_control, rtde_receive
+
+if not USE_CONTROLLER:
+    import keyboard 
+
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
@@ -37,12 +45,13 @@ INC_DELTA_PLANE = 0.01
 INC_DELTA_HEIGHT = 0.01
 INC_DELTA_ROT = 0.01
 
-# increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational
-
 SPEED_L = 0.1 #1.0 #3.0 #0.5 #0.25
 SPEED_L_MAX = 0.4
 SPEED_ANG = 0.2 #0.1
 SPEED_ANG_MAX = 0.4
+
+SPEED_J = 1.05 #default speed and acceleration for joins
+ACCEL_J = 1.4
 
 ACCEL_L = 1.0 #0.1 #25
 ACCEL_L_STOP = 10
@@ -55,14 +64,7 @@ SPEED_STEP_ROT = 0.1
 
 LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 
-
-
-
-# speed_plane = 1.0
-# speed_vertical = 1.0
-# speed_rot = 0.1
-
-#speed = [1.0, 1.0, 0.1] # plane, vertical, rotational
+Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0]#[90.0, -60.0, 40.0, -50, -90.0, 0.0] # Home position in deg
 
 
 def setup():
@@ -75,6 +77,12 @@ def setup():
     else:
         rtde_c = None
         rtde_r = None
+
+    # Connect to the gripper/ESP32 through serial interface
+    # if USE_GRIPPER:
+
+    # else: 
+    #     pass
 
     # Setup the ps4 controller
     joystick = ps4.controller_init()
@@ -184,12 +192,19 @@ def loop_speed_cntrl(rtde_c, joystick):
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, SPEED_ANG_MAX)
-        current_speedL_d[5] = 0.0 # TODO: REMOVE ONCE BARAN FIXES MAPPING
-
+        current_speedL_d, speedButtons = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        
         if current_speedL_d is None:
             break
         
+        # Adjust angular speed
+        if speedButtons[0] == 1:
+            speed[2] -= SPEED_STEP_ROT
+            speed[2] = max(speed[2], 0.0)
+        elif speedButtons[1] == 1:
+            speed[2] += SPEED_STEP_ROT
+            speed[2] = min(speed[2], SPEED_ANG_MAX)
+
         # Send speed command (or stop) to robot
         if USE_ROBOT:
             # Decelerate faster when stopping
@@ -197,6 +212,10 @@ def loop_speed_cntrl(rtde_c, joystick):
                 rtde_c.speedStop(ACCEL_L_STOP)
             else:
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
+
+        # Send open/close or electromagnet on/off command to gripper
+        # if USE_GRIPPER:
+        #     pass
 
         print(current_speedL_d)
 
@@ -224,10 +243,18 @@ def loop_pos_cntrl(rtde_c, rtde_r):
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
         
+#move to home position (no singularity)
+def move_home(q_desired, speed, acceleration, asynchronous=False):
+    rtde_c.moveJ(q_desired, speed, acceleration, asynchronous)
+    return
+
 
 if __name__ == "__main__":
     # SETUP
     rtde_c, rtde_r, joystick = setup()
+
+    if USE_ROBOT:
+        move_home(Q_HOME, SPEED_J, ACCEL_J, False)
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
@@ -239,9 +266,11 @@ if __name__ == "__main__":
 
 
 # TODO: prevent going into singularity, OR: if robot is in singularity, get out!!!!!
-# Home position??
+# Home position -> only go to home when press button
+# Allow joint control through keyboard??
+# Perhaps change the orientation to just wrist control?? And and x-y-z just to wrist-3 
 
-
+# Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
 
 
 # Perhaps: move asynchronously parallel to windows of rubble until high IR detected and stop there? or store highest IR value and move back to that
