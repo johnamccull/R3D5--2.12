@@ -268,8 +268,6 @@ def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
 
 
 
-
-
 # TODO: 
 # pulling l2 to make in 'tool' doesn't work? -> make it pressing '
 # 

@@ -1,13 +1,18 @@
-import rtde_control, rtde_receive
 import time
 import PS4_Control as ps4
-import keyboard 
 import math
 
 # PARAMETERS
 # Robot IP address
 IP_UR5 = "169.254.157.0"
-USE_ROBOT = True #False #True
+USE_ROBOT = False #True
+USE_CONTROLLER = True
+
+if USE_ROBOT:
+    import rtde_control, rtde_receive
+
+if not USE_CONTROLLER:
+    import keyboard 
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
@@ -244,7 +249,9 @@ def move_home(q_desired, speed, acceleration, asynchronous=False):
 if __name__ == "__main__":
     # SETUP
     rtde_c, rtde_r, joystick = setup()
-    move_home(Q_HOME, SPEED_J, ACCEL_J, False)
+
+    if USE_ROBOT:
+        move_home(Q_HOME, SPEED_J, ACCEL_J, False)
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
