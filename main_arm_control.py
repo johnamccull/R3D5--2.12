@@ -5,7 +5,6 @@ import math
 # PARAMETERS
 # Robot IP address
 IP_UR5 = "169.254.157.0"
-<<<<<<< HEAD
 USE_ROBOT = False #True
 USE_CONTROLLER = True
 USE_GRIPPER = False
@@ -15,10 +14,7 @@ if USE_ROBOT:
 
 if not USE_CONTROLLER:
     import keyboard 
-=======
-USE_ROBOT = True 
 
->>>>>>> c3897982b6b1aab566b514d336c302efac689d18
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
