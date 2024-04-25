@@ -3,8 +3,12 @@ import PS4_Control as ps4
 import math
 
 # PARAMETERS
+PRINT_SPEED = False
+
 # Robot IP address
 IP_UR5 = "169.254.157.0"
+
+# Components
 USE_ROBOT = False #True
 USE_CONTROLLER = True
 USE_GRIPPER = False
@@ -15,6 +19,14 @@ if USE_ROBOT:
 if not USE_CONTROLLER:
     import keyboard 
 
+if USE_GRIPPER:
+    import serial
+    import time
+
+# Serial configuration for gripper
+port = '/dev/ttyACM0' 
+baud_rate = 115200
+timeout = 2  # Timeout for serial communication
 
 # Keyboard control directions and commands
 KEY_XM = 'f' #'s'
@@ -38,6 +50,11 @@ KEY_ANGSPEEDP = 'y'
 KEY_ANGSPEEDM = 'h'
 
 KEY_QUIT = 'q'
+
+CLAW_OPEN = "v" # 'share' toggles gripper
+CLAW_CLOSE = "c"
+MAG_ON = "m" # 'options' toggles EM
+MAG_OFF = "n"
 
 ## POSITION CONTROL
 # Set position increments
@@ -67,6 +84,7 @@ LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0]#[90.0, -60.0, 40.0, -50, -90.0, 0.0] # Home position in deg
 
 
+
 def setup():
     # Connect to the robot
     if USE_ROBOT:
@@ -79,17 +97,27 @@ def setup():
         rtde_r = None
 
     # Connect to the gripper/ESP32 through serial interface
-    # if USE_GRIPPER:
-
-    # else: 
-    #     pass
+    if USE_GRIPPER:
+        # Initialize serial connection
+        try:
+            gripper_serial = serial.Serial(port, baud_rate, timeout=timeout)
+            print("Connected to gripper on port " + port)
+        except Exception as e:
+            print("Failed to connect gripper on port: " + str(port))
+            print(str(e))
+            exit()
+    else:
+        gripper_serial = None
 
     # Setup the ps4 controller
-    joystick = ps4.controller_init()
+    if USE_CONTROLLER:
+        joystick = ps4.controller_init()
+    else:
+        joystick = None
 
     print('Setup complete. Robot connected.')
 
-    return rtde_c, rtde_r, joystick
+    return rtde_c, rtde_r, joystick, gripper_serial
 
 ## KEYBOARD CONTROL
 # Alters the setpoint (either position or speed) based on the mode of control
@@ -182,21 +210,27 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     return new_setpoint, new_speed, new_increment
 
 ## CONTROL SPEED AND POSITION
-def loop_speed_cntrl(rtde_c, joystick):
+def loop_speed_cntrl(rtde_c, joystick, gripper_serial):
+    # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
-    #current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    gripper_open = False # False = closed, True = open
+    magnet_on = False # False = off, True = on
     
     # Speed control loop
     while True:
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
-        
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+
         if current_speedL_d is None:
             break
         
+         # Send home/reset
+        if reset:
+            reset()
+
         # Adjust angular speed
         if speedButtons[0] == 1:
             speed[2] -= SPEED_STEP_ROT
@@ -205,7 +239,7 @@ def loop_speed_cntrl(rtde_c, joystick):
             speed[2] += SPEED_STEP_ROT
             speed[2] = min(speed[2], SPEED_ANG_MAX)
 
-        # Send speed command (or stop) to robot
+        # Send speed command (or stop) to robot, and other commands
         if USE_ROBOT:
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
@@ -214,10 +248,32 @@ def loop_speed_cntrl(rtde_c, joystick):
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
 
         # Send open/close or electromagnet on/off command to gripper
-        # if USE_GRIPPER:
-        #     pass
+        if USE_GRIPPER:
+            # Toggle gripper 
+            if toggle_gripper:
+                # Determine if the gripper should open or close
+                cmd = CLAW_CLOSE
+                
+                if not gripper_open:
+                    cmd = CLAW_OPEN
 
-        print(current_speedL_d)
+                # Send the command
+                send_gripper_cmd(gripper_serial, cmd)
+                gripper_open = not gripper_open   
+
+            if toggle_magnet:
+                # Determine if the magnet should turn on or off
+                cmd = MAG_ON
+                
+                if magnet_on:
+                    cmd = MAG_OFF
+
+                # Send the command
+                send_gripper_cmd(gripper_serial, cmd)
+                magnet_on = not magnet_on
+
+        if PRINT_SPEED:
+            print(current_speedL_d)
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
 
@@ -239,7 +295,18 @@ def loop_pos_cntrl(rtde_c, rtde_r):
         # 'True'. Try to set the async parameter to 'False' to observe a default synchronous movement, which cannot be stopped
         # by the stopL function due to the blocking behaviour. Using 'True' makes it choppy as it sends more moveL commands every time without waiting
         rtde_c.moveL(current_poseL_d, SPEED_L, ACCEL_L, False)
-        print(current_poseL_d)
+
+        if PRINT_SPEED:
+            print(current_poseL_d)
+
+        #     while True:
+        # cmd = input("Enter command (OPEN (v), CLOSE (c), MAG_ON (m), MAG_OFF (n), or q to quit): ")
+        # if cmd.lower() == 'q':
+        #     break
+        # elif cmd in ['v', 'c', 'm', 'n']:
+        #     send_command(cmd)
+        # else:
+        #     print("Invalid command. Please try again.")
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
         
@@ -248,29 +315,47 @@ def move_home(q_desired, speed, acceleration, asynchronous=False):
     rtde_c.moveJ(q_desired, speed, acceleration, asynchronous)
     return
 
+ # Send a command to the ESP32 (which the gripper runs off) via serial
+def send_gripper_cmd(gripper_serial, command):
+    gripper_serial.write((command + '\n').encode())  # Command must end with a newline character
+    time.sleep(0.1)  # Give some time for the ESP32 to respond
+    while gripper_serial.in_waiting:
+        print(gripper_serial.readline().decode().strip())  # Print the ESP32's response
+
+
+def reset():
+    print('RESET')
+
+    # Reset the robot to home position
+    if USE_ROBOT:
+        move_home(Q_HOME, SPEED_J, ACCEL_J, False)
+
+    if USE_GRIPPER:
+        send_gripper_cmd(gripper_serial, CLAW_CLOSE)
+        send_gripper_cmd(gripper_serial, MAG_OFF)
+
 
 if __name__ == "__main__":
     # SETUP
-    rtde_c, rtde_r, joystick = setup()
-
-    if USE_ROBOT:
-        move_home(Q_HOME, SPEED_J, ACCEL_J, False)
+    rtde_c, rtde_r, joystick, gripper_serial = setup()
+    #reset()
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
     #loop_pos_cntrl(rtde_c, rtde_r)
-    loop_speed_cntrl(rtde_c, joystick)
+    loop_speed_cntrl(rtde_c, joystick, gripper_serial)
 
 
 
 
-
-# TODO: prevent going into singularity, OR: if robot is in singularity, get out!!!!!
+# TODO: 
 # Home position -> only go to home when press button
-# Allow joint control through keyboard??
-# Perhaps change the orientation to just wrist control?? And and x-y-z just to wrist-3 
-
-# Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
+# 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
+# 2. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
+# 3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
+# 4. Integrate with IR sensor
+# 5. Define some autonomous behaviors/trajectories for scanning for TIM, picking up and dropping off rubble and picking up and dropping off TIM 
+# (this includes actuating/deactuating gripper and electromagnet and mapping these to controller/keyboard inputs too)
 
 
 # Perhaps: move asynchronously parallel to windows of rubble until high IR detected and stop there? or store highest IR value and move back to that

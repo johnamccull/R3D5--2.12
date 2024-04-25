@@ -50,22 +50,6 @@ void setup() {
 
 }
 
-// void loop() {
-//     clawAngle(90);
-//     ums3.setPixelColor(UMS3::colorWheel(0));
-//     delay(2000);             // waits 20ms for the servo to reach the position
-	
-//     clawAngle(350);
-//     ums3.setPixelColor(UMS3::colorWheel(50));
-//     delay(3000);
-
-//     clawAngle(90);
-//     ums3.setPixelColor(UMS3::colorWheel(100));
-//     delay(1000);             // waits 20ms for the servo to reach the position
-	
-//     turnOnMagnet(DELAY);
-// }
-
 void loop() {
     if (Serial.available() > 0) {
         String command = Serial.readStringUntil('\n');

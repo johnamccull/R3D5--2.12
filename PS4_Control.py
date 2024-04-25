@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 
 PRINT = False
+MAPPING_LINUX = True # Harvey's controller key mappings are different to Baran's. Switch here/DO NOT JUST CHANGE THE BUTTONS BELOW
 
 def smooth_data(data, threshold=0.1):
     """
@@ -132,28 +133,51 @@ def get_controller_input(joystick):
         print("Buttons:", buttons)
 
     #Group to PS4 Layout
-
-    # Right Button Pad
-    tri_but = buttons[2] #buttons[3]
-    sq_but = buttons[3] #buttons[2]
-    cir_but = buttons[1]
-    x_but = buttons[0]
-    #up_but = buttons[11]
-    #l_but = buttons[13]
-    #r_but = buttons[14]
-    #d_but = buttons[12]
-    rb_pad = [tri_but,sq_but,cir_but,x_but]
-    #lb_pad = [up_but,l_but,r_but,d_but]
-    options = buttons[6]
-    share = buttons[4]
-    touchpad = buttons[len(buttons)-1]
-    r1 = buttons[5] #buttons[10]
-    r2 = buttons[7] #axes[len(axes)-1]
-    l1 = buttons[4] #buttons[9]
-    l2 = buttons[6] #axes[len(axes)-2]
-    rl_buttons = [r1,l1,r2,l2]
-    l_pad = [axes[0],axes[1],buttons[11]] #buttons[7]
-    r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
+    if MAPPING_LINUX:
+        # Right Button Pad
+        tri_but = buttons[2] #buttons[3]
+        sq_but = buttons[3] #buttons[2]
+        cir_but = buttons[1]
+        x_but = buttons[0]
+        #up_but = buttons[11]
+        #l_but = buttons[13]
+        #r_but = buttons[14]
+        #d_but = buttons[12]
+        rb_pad = [tri_but,sq_but,cir_but,x_but]
+        #lb_pad = [up_but,l_but,r_but,d_but]
+        options = buttons[9] 
+        share = buttons[8]  
+        home = buttons[10]
+        touchpad = buttons[len(buttons)-1]
+        r1 = buttons[5] #buttons[10]
+        r2 = buttons[7] #axes[len(axes)-1]
+        l1 = buttons[4] #buttons[9]
+        l2 = buttons[6] #axes[len(axes)-2]
+        rl_buttons = [r1,l1,r2,l2]
+        l_pad = [axes[0],axes[1],buttons[11]] #buttons[7]
+        r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
+    else:
+        # Right Button Pad
+        tri_but = buttons[2] #buttons[3]
+        sq_but = buttons[3] #buttons[2]
+        cir_but = buttons[1]
+        x_but = buttons[0]
+        #up_but = buttons[11]
+        #l_but = buttons[13]
+        #r_but = buttons[14]
+        #d_but = buttons[12]
+        rb_pad = [tri_but,sq_but,cir_but,x_but]
+        #lb_pad = [up_but,l_but,r_but,d_but]
+        options = buttons[6] 
+        share = buttons[4]  
+        touchpad = buttons[len(buttons)-1]
+        r1 = buttons[5] #buttons[10]
+        r2 = buttons[7] #axes[len(axes)-1]
+        l1 = buttons[4] #buttons[9]
+        l2 = buttons[6] #axes[len(axes)-2]
+        rl_buttons = [r1,l1,r2,l2]
+        l_pad = [axes[0],axes[1],buttons[11]] #buttons[7]
+        r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
     
     #Planar Motion Assingment
     Vx = -l_pad[0] #Left Joystick Horizontal Axis
@@ -241,8 +265,11 @@ def get_controller_input(joystick):
     #pygame.time.wait(100)
 
     speedButtons = [l_pad[2], r_pad[2]]
+    toggleMagnet = options # Use 'options' button for electromagnet on/off
+    toggleGripper = share # Use 'share' button for gripper open/close
+    sendHome = home
 
-    return stateList, speedButtons
+    return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome
 
 # Scale the state list to give actual velocities
 def scale_state_list(stateList, v_max_planar, v_max_ang):
@@ -260,11 +287,11 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
 
 # Get the scaled inputs from the controller
 def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
-    stateList, speedButtons = get_controller_input(joystick)
+    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome = get_controller_input(joystick)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 
-    return stateList_scaled, speedButtons
+    return stateList_scaled, speedButtons, toggleGripper, toggleMagnet, sendHome
 
 
 
