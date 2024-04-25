@@ -9,9 +9,9 @@ PRINT_SPEED = True
 IP_UR5 = "169.254.157.0"
 
 # Components
-USE_ROBOT = False #True
+USE_ROBOT = True #True
 USE_CONTROLLER = True
-USE_GRIPPER = False
+USE_GRIPPER = True
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -81,8 +81,8 @@ SPEED_STEP_ROT = 0.1
 
 LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 
-Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0]#[90.0, -60.0, 40.0, -50, -90.0, 0.0] # Home position in deg
-
+Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0] # Home position in deg
+#[-60.0*(math.pi/180.0), -93.0*(math.pi/180.0), -71.0*(math.pi/180.0), -104.0*(math.pi/180.0), 90.0*(math.pi/180.0), 14.0*(math.pi/180.0)]
 
 
 def setup():
@@ -330,9 +330,9 @@ def reset():
     if USE_ROBOT:
         move_home(Q_HOME, SPEED_J, ACCEL_J, False)
 
-    if USE_GRIPPER:
-        send_gripper_cmd(gripper_serial, CLAW_CLOSE)
-        send_gripper_cmd(gripper_serial, MAG_OFF)
+    # if USE_GRIPPER:
+    #     send_gripper_cmd(gripper_serial, CLAW_CLOSE)
+    #     send_gripper_cmd(gripper_serial, MAG_OFF)
 
 
 if __name__ == "__main__":
@@ -348,13 +348,8 @@ if __name__ == "__main__":
 
 
 
-# TODO: 
-# 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
-# 2. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
-# 3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
-# 4. Integrate with IR sensor
-# 5. Define some autonomous behaviors/trajectories for scanning for TIM, picking up and dropping off rubble and picking up and dropping off TIM 
-# (this includes actuating/deactuating gripper and electromagnet and mapping these to controller/keyboard inputs too)
+
+
 
 
 # Perhaps: move asynchronously parallel to windows of rubble until high IR detected and stop there? or store highest IR value and move back to that
