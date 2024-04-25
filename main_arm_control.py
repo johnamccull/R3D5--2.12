@@ -349,7 +349,6 @@ if __name__ == "__main__":
 
 
 # TODO: 
-# Home position -> only go to home when press button
 # 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
 # 2. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
 # 3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement
