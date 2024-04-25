@@ -1,9 +1,7 @@
 /***************************************************************************
   This is a library for the AMG88xx GridEYE 8x8 IR camera
 
-  This sketch tries to read the onboard thermistor.
-  This is useful for ensuring your wiring is correct.
-  Expect a reading of ~25 degrees C (room temperature)
+  This sketch tries to read the pixels from the sensor
 
   Designed specifically to work with the Adafruit AMG88 breakout
   ----> http://www.adafruit.com/products/3538
@@ -23,11 +21,12 @@
 
 Adafruit_AMG88xx amg;
 
-void setup() {
-    Serial.begin(9600); //Serial.begin(115200);
-    Serial.println(F("AMG88xx test"));
+float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
-    Serial.println("Setup started");
+void setup() {
+    Serial.begin(9600);
+    Serial.println(F("AMG88xx pixels"));
+
     bool status;
     
     // default settings
@@ -36,8 +35,10 @@ void setup() {
         Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
         while (1);
     }
+    
+    Serial.println("-- Pixels Test --");
 
-    Serial.println("Setup complete");
+    Serial.println();
 
     delay(100); // let sensor boot up
 }
@@ -45,26 +46,15 @@ void setup() {
 
 void loop() { 
     //read all the pixels
-    //Serial.print("Looping");
+    amg.readPixels(pixels);
 
-    // amg.readPixels(pixels);
-
-    // Serial.print("[");
-    // for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-    //   Serial.print(pixels[i-1]);
-    //   Serial.print(", ");
-    //   if( i%8 == 0 ) Serial.println();
-    // }
-    // Serial.println("]");
-    // Serial.println();
-
-    // //delay a second
-    // delay(1000);
-
-    Serial.print("Thermistor Temperature = ");
-    Serial.print(amg.readThermistor());
-    Serial.println(" *C");
-  
+    Serial.print("[");
+    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+      Serial.print(pixels[i-1]);
+      Serial.print(", ");
+      if( i%8 == 0 ) Serial.println();
+    }
+    Serial.println("]");
     Serial.println();
 
     //delay a second
