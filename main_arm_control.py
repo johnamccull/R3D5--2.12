@@ -3,7 +3,7 @@ import PS4_Control as ps4
 import math
 
 # PARAMETERS
-PRINT_SPEED = False
+PRINT_SPEED = True
 
 # Robot IP address
 IP_UR5 = "169.254.157.0"
@@ -222,13 +222,13 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial):
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
 
         if current_speedL_d is None:
             break
         
          # Send home/reset
-        if reset:
+        if reset_home:
             reset()
 
         # Adjust angular speed
