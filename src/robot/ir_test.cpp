@@ -18,14 +18,18 @@
 
 #include <Wire.h>
 #include <Adafruit_AMG88xx.h>
+#define TCAADDR 0x70
 
+void tcaselect(uint8_t i);
 Adafruit_AMG88xx amg;
 
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println(F("AMG88xx pixels"));
+    Wire.begin();
+    tcaselect(0);
 
     bool status;
     
@@ -39,7 +43,7 @@ void setup() {
     Serial.println("-- Pixels Test --");
 
     Serial.println();
-
+    
     delay(100); // let sensor boot up
 }
 
@@ -59,4 +63,12 @@ void loop() {
 
     //delay a second
     delay(1000);
+}
+
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+ 
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
 }
