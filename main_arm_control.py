@@ -11,7 +11,7 @@ IP_UR5 = "169.254.157.0"
 # Components
 USE_ROBOT = True #True
 USE_CONTROLLER = True
-USE_GRIPPER = True
+USE_GRIPPER = True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -210,19 +210,22 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     return new_setpoint, new_speed, new_increment
 
 ## CONTROL SPEED AND POSITION
-def loop_speed_cntrl(rtde_c, joystick, gripper_serial):
+def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
-    
+   
     # Speed control loop
     while True:
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
         current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        current_poseL_d = rtde_r.getActualTCPPose()
+        offset_tim = 17.2 
+        current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
         if current_speedL_d is None:
             break
@@ -274,6 +277,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial):
 
         if PRINT_SPEED:
             print(current_speedL_d)
+            print(current_z_cm) #z position of TIM, 0 = good position to pick up TIM
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
 
@@ -282,7 +286,7 @@ def loop_pos_cntrl(rtde_c, rtde_r):
     ## POLLING LOOP
     speed = [0.0, 0.0, 0.0]
     increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational increment sizes
-    current_poseL_d = rtde_r.getActualTCPPose()
+    
     
     while True:
         current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
@@ -343,7 +347,7 @@ if __name__ == "__main__":
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
     #loop_pos_cntrl(rtde_c, rtde_r)
-    loop_speed_cntrl(rtde_c, joystick, gripper_serial)
+    loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r)
 
 
 
