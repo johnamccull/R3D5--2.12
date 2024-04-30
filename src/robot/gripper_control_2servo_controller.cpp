@@ -15,6 +15,8 @@
 #define MIN_US 500
 #define MAX_US 2500
 
+#define TEMP_THRESHOLD 30
+
 #define CLAW_OPEN "v"
 #define CLAW_CLOSE "c"
 #define MAG_ON "m"
@@ -38,6 +40,7 @@ void turnOnMagnet (bool on);
 void IR_test();
 void PIXELS();
 void tcaselect(uint8_t i);
+bool see_hot;
 
 UMS3 ums3;
 
@@ -81,6 +84,7 @@ void loop() {
         } else {
             Serial.println("Unknown command");
         }
+        if (millis()%1000 == 100){PIXELS();}
     }
 }
 
@@ -137,14 +141,15 @@ void PIXELS() {
     Serial.print("[");
     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
       Serial.print(pixels[i-1]);
+      if(pixels[i-1]> TEMP_THRESHOLD){see_hot = true;}
       Serial.print(", ");
       if( i%8 == 0 ) Serial.println();
     }
     Serial.println("]");
     Serial.println();
-
+    if(see_hot) Serial.println("I SEE SOMETHING HOT");
     //delay a second
-    delay(1000);
+    delay(100);
 }
 
 void tcaselect(uint8_t i) {
