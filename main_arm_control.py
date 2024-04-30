@@ -251,9 +251,9 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
             
             #SIGULARITY FUNCTION
-            speed_time = [x * 1 for x in current_speedL_d] #multiply each number in list by time step
+            speed_time = [x * 1 for x in current_speedL_d] #multiply each speed value by time step
             new_pose = [z + y for z, y in zip(current_poseL_d, speed_time)] #create new list of positions
-            sing = rtde_c.isPoseWithinSafetyLimits(new_pose) #singularity area
+            sing = rtde_c.isPoseWithinSafetyLimits(new_pose) #false if future position is singularity
             if not sing: 
                 rtde_c.speedStop() #STOP SPEED 
                 print("SINGULARITY ALMOST HIT STOP")
