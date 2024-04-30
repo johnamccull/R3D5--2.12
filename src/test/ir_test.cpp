@@ -23,7 +23,9 @@
 void tcaselect(uint8_t i);
 Adafruit_AMG88xx amg;
 
+bool see_hot = false;
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
+float threshold = 30;
 
 void setup() {
     Serial.begin(115200);
@@ -32,6 +34,7 @@ void setup() {
     tcaselect(0);
 
     bool status;
+
     
     // default settings
     status = amg.begin();
@@ -48,21 +51,24 @@ void setup() {
 }
 
 
-void loop() { 
+void loop() {
     //read all the pixels
     amg.readPixels(pixels);
 
     Serial.print("[");
     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
       Serial.print(pixels[i-1]);
+      if(pixels[i-1]> threshold){see_hot = true;}
       Serial.print(", ");
       if( i%8 == 0 ) Serial.println();
     }
     Serial.println("]");
     Serial.println();
-
+    if(see_hot) Serial.println("I SEE SOMETHING HOT");
+  
     //delay a second
     delay(1000);
+    see_hot = false;
 }
 
 void tcaselect(uint8_t i) {
