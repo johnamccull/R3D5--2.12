@@ -268,8 +268,9 @@ def get_controller_input(joystick):
     toggleMagnet = options # Use 'options' button for electromagnet on/off
     toggleGripper = share # Use 'share' button for gripper open/close
     sendHome = home
+    zPickUp = r2
 
-    return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome
+    return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp
 
 # Scale the state list to give actual velocities
 def scale_state_list(stateList, v_max_planar, v_max_ang):
@@ -287,11 +288,11 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
 
 # Get the scaled inputs from the controller
 def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
-    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome = get_controller_input(joystick)
+    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp = get_controller_input(joystick)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 
-    return stateList_scaled, speedButtons, toggleGripper, toggleMagnet, sendHome
+    return stateList_scaled, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp
 
 
 

@@ -11,7 +11,7 @@ IP_UR5 = "169.254.157.0"
 # Components
 USE_ROBOT = True #True
 USE_CONTROLLER = True
-USE_GRIPPER = True 
+USE_GRIPPER = False 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -209,7 +209,7 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
 
     return new_setpoint, new_speed, new_increment
 
-## CONTROL SPEED AND POSITION
+## CONTROL SPEED AND POSITION 
 def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
@@ -222,7 +222,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
         current_poseL_d = rtde_r.getActualTCPPose()
         offset_tim = 17.2 
         current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
@@ -249,6 +249,14 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 rtde_c.speedStop(ACCEL_L_STOP)
             else:
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
+            
+            #SIGULARITY FUNCTION
+            speed_time = [x * 1 for x in current_speedL_d] #multiply each number in list by time step
+            new_pose = [z + y for z, y in zip(current_poseL_d, speed_time)] #create new list of positions
+            sing = rtde_c.isPoseWithinSafetyLimits(new_pose) #singularity area
+            if not sing: 
+                rtde_c.speedStop() #STOP SPEED 
+                print("SINGULARITY ALMOST HIT STOP")
 
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
@@ -274,6 +282,12 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 # Send the command
                 send_gripper_cmd(gripper_serial, cmd)
                 magnet_on = not magnet_on
+
+        if zPickUp:
+              # single axis target
+             target = 0
+             targetPickUp = [c if i != 2 else target for c,i in enumerate(current_poseL_d)]
+             rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False)
 
         if PRINT_SPEED:
             print(current_speedL_d)
