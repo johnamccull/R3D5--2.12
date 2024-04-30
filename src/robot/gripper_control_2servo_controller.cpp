@@ -35,9 +35,9 @@ int degToUs (float angleOffset, float startingAngle);
 void clawAngle (float angleOffset);
 void turnOnMagnet (bool on);
 
-void IR_test();
-void PIXELS();
-void tcaselect(uint8_t i);
+// void IR_test();
+// void PIXELS();
+// void tcaselect(uint8_t i);
 
 UMS3 ums3;
 
@@ -107,51 +107,51 @@ void turnOnMagnet (bool on) {
 }
 
 
-void IR_test() {
-    Serial.begin(115200);
-    Serial.println(F("AMG88xx pixels"));
-    Wire.begin();
-    tcaselect(0);
+// void IR_test() {
+//     Serial.begin(115200);
+//     Serial.println(F("AMG88xx pixels"));
+//     Wire.begin();
+//     tcaselect(0);
 
-    bool status;
+//     bool status;
     
-    // default settings
-    status = amg.begin();
-    if (!status) {
-        Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
-        while (1);
-    }
+//     // default settings
+//     status = amg.begin();
+//     if (!status) {
+//         Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
+//         while (1);
+//     }
     
-    Serial.println("-- Pixels Test --");
+//     Serial.println("-- Pixels Test --");
 
-    Serial.println();
+//     Serial.println();
     
-    delay(100); // let sensor boot up
-}
+//     delay(100); // let sensor boot up
+// }
 
 
-void PIXELS() { 
-    //read all the pixels
-    amg.readPixels(pixels);
+// void PIXELS() { 
+//     //read all the pixels
+//     amg.readPixels(pixels);
 
-    Serial.print("[");
-    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      Serial.print(pixels[i-1]);
-      Serial.print(", ");
-      if( i%8 == 0 ) Serial.println();
-    }
-    Serial.println("]");
-    Serial.println();
+//     Serial.print("[");
+//     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+//       Serial.print(pixels[i-1]);
+//       Serial.print(", ");
+//       if( i%8 == 0 ) Serial.println();
+//     }
+//     Serial.println("]");
+//     Serial.println();
 
-    //delay a second
-    delay(1000);
-}
+//     //delay a second
+//     delay(1000);
+// }
 
-void tcaselect(uint8_t i) {
-  if (i > 7) return;
+// void tcaselect(uint8_t i) {
+//   if (i > 7) return;
  
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();  
-}
+//   Wire.beginTransmission(TCAADDR);
+//   Wire.write(1 << i);
+//   Wire.endTransmission();  
+// }
 

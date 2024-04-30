@@ -11,7 +11,7 @@ IP_UR5 = "169.254.157.0"
 # Components
 USE_ROBOT = True #True
 USE_CONTROLLER = True
-USE_GRIPPER = False 
+USE_GRIPPER = True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -251,7 +251,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 rtde_c.speedL(current_speedL_d, ACCEL_L, 0.1)
             
             #SIGULARITY FUNCTION
-            speed_time = [x * 1 for x in current_speedL_d] #multiply each number in list by time step
+            speed_time = [x * .5 for x in current_speedL_d] #multiply each number in list by time step
             new_pose = [z + y for z, y in zip(current_poseL_d, speed_time)] #create new list of positions
             sing = rtde_c.isPoseWithinSafetyLimits(new_pose) #singularity area
             if not sing: 
@@ -285,8 +285,14 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
         if zPickUp:
               # single axis target
-             target = 0
-             targetPickUp = [c if i != 2 else target for c,i in enumerate(current_poseL_d)]
+             target = offset_tim / 100 # Target Height
+             targetPickUp = [0, 0, 0, 0, 0, 0]
+             for i in [0, 1, 2, 3, 4, 5]:
+                 if i == 2:
+                     targetPickUp[i] = target
+                 else:
+                     targetPickUp[i] = current_poseL_d[i]
+                 
              rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False)
 
         if PRINT_SPEED:
