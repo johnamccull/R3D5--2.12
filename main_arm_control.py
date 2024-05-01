@@ -11,7 +11,7 @@ IP_UR5 = "169.254.157.0"
 # Components
 USE_ROBOT = True #True #True
 USE_CONTROLLER = True
-USE_GRIPPER = False 
+USE_GRIPPER = True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -81,10 +81,10 @@ SPEED_STEP_ROT = 0.1
 
 LOOP_SLEEP_TIME = 0.1 # Run at 10 Hz
 
-Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -50*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0] # Home position in deg
+Q_HOME = [math.pi/2, -60.0*(math.pi/180.0), 40.0*(math.pi/180.0), -70*(math.pi/180.0), -90.0*(math.pi/180.0), 0.0] # Home position in deg
 #[-60.0*(math.pi/180.0), -93.0*(math.pi/180.0), -71.0*(math.pi/180.0), -104.0*(math.pi/180.0), 90.0*(math.pi/180.0), 14.0*(math.pi/180.0)]
 
-
+True
 def setup():
     # Connect to the robot
     if USE_ROBOT:
@@ -108,7 +108,6 @@ def setup():
             exit()
     else:
         gripper_serial = None
-
     # Setup the ps4 controller
     if USE_CONTROLLER:
         joystick = ps4.controller_init()
@@ -263,6 +262,21 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
             # If the z-pickup functionality is enabled
             if zPickUp:
+                # single axis target
+                target = offset_tim / 100 # Target Height
+                eps = 0.005 # 5 mm epsilon 
+                
+                if (current_poseL_d[2] <= target + eps) and (current_poseL_d[2] >= target - eps):
+                    try:
+                        target = old_z_height
+                    except: 
+                        target = target + 0.25 
+                else:
+                    old_z_height = current_poseL_d[2]
+               
+                targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
+                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
+        if zPickUp:
                 # single axis target
                 target = offset_tim / 100 # Target Height
                 eps = 0.005 # 5 mm epsilon 
