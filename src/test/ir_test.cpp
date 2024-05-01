@@ -67,7 +67,7 @@ void loop() {
     if(see_hot) Serial.println("I SEE SOMETHING HOT");
   
     //delay a second
-    delay(1000);
+    delay(3000);
     see_hot = false;
 }
 

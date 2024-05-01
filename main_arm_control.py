@@ -9,7 +9,7 @@ PRINT_SPEED = True
 IP_UR5 = "169.254.157.0"
 
 # Components
-USE_ROBOT = True #True
+USE_ROBOT = False #True #True
 USE_CONTROLLER = True
 USE_GRIPPER = True 
 
@@ -223,9 +223,6 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
         current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
-        current_poseL_d = rtde_r.getActualTCPPose()
-        offset_tim = 17.2 
-        current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
         if current_speedL_d is None:
             break
@@ -244,6 +241,11 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
         # Send speed command (or stop) to robot, and other commands
         if USE_ROBOT:
+            # Get current pose and z position
+            current_poseL_d = rtde_r.getActualTCPPose()
+            offset_tim = 17.2 
+            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
+            
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
                 rtde_c.speedStop(ACCEL_L_STOP)
@@ -257,6 +259,19 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
             if not sing: 
                 rtde_c.speedStop() #STOP SPEED 
                 print("SINGULARITY ALMOST HIT STOP")
+
+            # If the z-pickup functionality is enabled
+            if zPickUp:
+                # single axis target
+                target = offset_tim / 100 # Target Height
+                targetPickUp = [0, 0, 0, 0, 0, 0]
+                for i in [0, 1, 2, 3, 4, 5]:
+                    if i == 2:
+                        targetPickUp[i] = target
+                    else:
+                        targetPickUp[i] = current_poseL_d[i]
+                    
+                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False)
 
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
@@ -283,21 +298,13 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 send_gripper_cmd(gripper_serial, cmd)
                 magnet_on = not magnet_on
 
-        if zPickUp:
-              # single axis target
-             target = offset_tim / 100 # Target Height
-             targetPickUp = [0, 0, 0, 0, 0, 0]
-             for i in [0, 1, 2, 3, 4, 5]:
-                 if i == 2:
-                     targetPickUp[i] = target
-                 else:
-                     targetPickUp[i] = current_poseL_d[i]
-                 
-             rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False)
-
+        # Print current speed
         if PRINT_SPEED:
             print(current_speedL_d)
-            print(current_z_cm) #z position of TIM, 0 = good position to pick up TIM
+
+            # Also print current z position
+            if USE_ROBOT:
+                print(current_z_cm) #z position of TIM, 0 = good position to pick up TIM
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
 

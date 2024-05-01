@@ -37,10 +37,12 @@ int degToUs (float angleOffset, float startingAngle);
 void clawAngle (float angleOffset);
 void turnOnMagnet (bool on);
 
-void IR_test();
-void PIXELS();
+void irSetup();
+void irRead();
 void tcaselect(uint8_t i);
-bool see_hot;
+bool see_hot; // = false;
+//float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
+//float threshold = 30;
 
 UMS3 ums3;
 
@@ -48,6 +50,8 @@ int pos = 0;      // position in degrees
 ESP32PWM pwm;
 
 void setup() {
+    Serial.begin(115200);
+    
     ums3.begin();
   // Brightness is 0-255. We set it to 1/3 brightness here
     ums3.setPixelBrightness(255 / 3);    
@@ -55,16 +59,23 @@ void setup() {
 	// Allow allocation of all timers
 	ESP32PWM::allocateTimer(0);
 	ESP32PWM::allocateTimer(1);
-	Serial.begin(115200);
+	
     electroMagnet.setup();
 	servo1.setPeriodHertz(50);      // Standard 50hz servo
 	servo2.setPeriodHertz(50);      // Standard 50hz servo
     servo1.attach(SERVO_1_PIN, MIN_US, MAX_US);
 	servo2.attach(SERVO_2_PIN, MIN_US, MAX_US);
 
+    // Setup IR sensor
+    irSetup();
+
+    delay(100); // let sensors boot up
+
+    Serial.println("Gripper setup complete");
 }
 
 void loop() {
+    //Serial.println("Looping"); CAN LOOP BUT NOT PRINTING BELOW
     if (Serial.available() > 0) {
         String command = Serial.readStringUntil('\n');
         command.trim();  // Remove any trailing newline or whitespace
@@ -84,7 +95,9 @@ void loop() {
         } else {
             Serial.println("Unknown command");
         }
-        if (millis()%1000 == 100){PIXELS();}
+        //if (millis()%1000 == 100){PIXELS();}
+        Serial.println("About to call"); //NOT PRINITNG HERE
+        irRead();
     }
 }
 
@@ -110,8 +123,8 @@ void turnOnMagnet (bool on) {
     }
 }
 
-void IR_test() {
-    Serial.begin(115200);
+void irSetup() {
+    //Serial.begin(115200);
     Serial.println(F("AMG88xx pixels"));
     Wire.begin();
     tcaselect(0);
@@ -125,16 +138,18 @@ void IR_test() {
         while (1);
     }
     
-    Serial.println("-- Pixels Test --");
-
-    Serial.println();
+    Serial.println("-- IR setup --");
+    //Serial.println();
     
-    delay(100); // let sensor boot up
+    // delay(100); // let sensor boot up
 }
 
 
-void PIXELS() { 
+void irRead() { 
+    Serial.println("About to read!");
+    
     //read all the pixels
+    see_hot = false;
     amg.readPixels(pixels);
 
     Serial.print("[");
@@ -148,7 +163,8 @@ void PIXELS() {
     Serial.println();
     if(see_hot) Serial.println("I SEE SOMETHING HOT");
     //delay a second
-    delay(100);
+    //delay(1000);
+    
 }
 
 void tcaselect(uint8_t i) {
