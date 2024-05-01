@@ -16,6 +16,7 @@
 #define MAX_US 2500
 
 #define TEMP_THRESHOLD 30
+#define PRINT_TEMPS 1
 
 #define CLAW_OPEN "v"
 #define CLAW_CLOSE "c"
@@ -75,8 +76,8 @@ void setup() {
 }
 
 void loop() {
-    //Serial.println("Looping"); CAN LOOP BUT NOT PRINTING BELOW
-    if (Serial.available() > 0) {
+    // This only runs if there is an incoming command through the serial port: https://www.arduino.cc/reference/en/language/functions/communication/serial/available/       
+    if (Serial.available() > 0) { 
         String command = Serial.readStringUntil('\n');
         command.trim();  // Remove any trailing newline or whitespace
 
@@ -95,10 +96,10 @@ void loop() {
         } else {
             Serial.println("Unknown command");
         }
-        //if (millis()%1000 == 100){PIXELS();}
-        Serial.println("About to call"); //NOT PRINITNG HERE
-        irRead();
     }
+
+    // This runs every 1 second
+    if (millis()%1000 == 0){irRead();}
 }
 
 
@@ -145,27 +146,40 @@ void irSetup() {
 }
 
 
-void irRead() { 
-    Serial.println("About to read!");
-    
+void irRead() {   
     //read all the pixels
     see_hot = false;
     amg.readPixels(pixels);
 
-    Serial.print("[");
-    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      Serial.print(pixels[i-1]);
-      if(pixels[i-1]> TEMP_THRESHOLD){see_hot = true;}
-      Serial.print(", ");
-      if( i%8 == 0 ) Serial.println();
+    // Print the temperatures if the flag is set (open bracket for array)
+    if(PRINT_TEMPS){
+        Serial.print("[");
     }
-    Serial.println("]");
-    Serial.println();
+
+    // Loop through all pixels returned from the ir sensor
+    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+        // If the temperature is above the threshold, set the flag
+        if(pixels[i-1]> TEMP_THRESHOLD){see_hot = true;}
+        
+        // Print the temperatures if the flag is set
+        if(PRINT_TEMPS){
+            Serial.print(pixels[i-1]);
+            Serial.print(", ");
+            if( i%8 == 0 ) {Serial.println();}
+        }
+    }
+
+    // Print the temperatures if the flag is set (close bracket for array)
+    if(PRINT_TEMPS){
+        Serial.println("]");
+        Serial.println();
+    }
+
     if(see_hot) Serial.println("I SEE SOMETHING HOT");
     //delay a second
-    //delay(1000);
-    
+    //delay(1000);   
 }
+
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
