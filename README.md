@@ -10,14 +10,16 @@ Test with additional webcam -
 Command to specific z height + print out z height - Kemi (Display TIM height)
 Other drivers: Avani, Baran, Kemi
 
-
-2. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
-3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement -> Can move down, but not up yet
+1. debug gripper
 
 
 # Done
 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
-4. Integrate with IR sensor
+2. Integrate with IR sensor
+3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement -> Can move down, but not up yet
+4. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
+
+
 
 
 
