@@ -9,9 +9,9 @@ PRINT_SPEED = True
 IP_UR5 = "169.254.157.0"
 
 # Components
-USE_ROBOT = False #True #True
+USE_ROBOT = True #True #True
 USE_CONTROLLER = True
-USE_GRIPPER = True 
+USE_GRIPPER = False 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -216,6 +216,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     increment = [0.0, 0.0, 0.0]
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
+    z_down = False #False = up, True = down 
    
     # Speed control loop
     while True:
@@ -244,7 +245,6 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
             # Get current pose and z position
             current_poseL_d = rtde_r.getActualTCPPose()
             offset_tim = 17.2 
-            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
             
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
@@ -270,8 +270,10 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                         targetPickUp[i] = target
                     else:
                         targetPickUp[i] = current_poseL_d[i]
-                    
-                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False)
+                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
+
+                if not z_down: #toggle button again 
+                    rtde_c.moveL(targetPickUp + 1, SPEED_L, ACCEL_L, False) # move up with Tim
 
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
