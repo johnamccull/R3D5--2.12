@@ -265,20 +265,19 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
             if zPickUp:
                 # single axis target
                 target = offset_tim / 100 # Target Height
-                targetPickUp = [0, 0, 0, 0, 0, 0]
-                for i in [0, 1, 2, 3, 4, 5]:
-                    if i == 2:
-                        targetPickUp[i] = target
-                    else:
-                        targetPickUp[i] = current_poseL_d[i]
-                    
+                eps = 0.005 # 5 mm epsilon 
+                
+                if (current_poseL_d[2] <= target + eps) and (current_poseL_d[2] >= target - eps):
+                    try:
+                        target = old_z_height
+                    except: 
+                        target = target + 0.25 
+                else:
+                    old_z_height = current_poseL_d[2]
+               
+                targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
                 rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-
-                if not z_down: #toggle button again 
-                    rtde_c.moveL(targetPickUp + 1, SPEED_L, ACCEL_L, False) # move up with Tim
         
-                z_down = not z_down
-
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
             # Toggle gripper 
@@ -295,7 +294,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
             if toggle_magnet:
                 # Determine if the magnet should turn on or off
-                cmd = MAG_ONcmd
+                cmd = MAG_ON
                 
                 if magnet_on:
                     cmd = MAG_OFF
