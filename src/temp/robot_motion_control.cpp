@@ -22,14 +22,14 @@ double prevPhiR = 0;
 void followTrajectory() {
 
     if (freshWirelessData) {
-        double forward = abs(controllerMessage.joystick1.y) < 0.01 ? 0 : mapDouble(controllerMessage.joystick1.y, -1, 1, -MAX_FORWARD, MAX_FORWARD);
+        double forward = abs(controllerMessage.joystick1.x) < 0.1 ? 0 : mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
         /*if (controllerMessage.joystick1.y < 0.5 && controllerMessage.joystick1.y >= 0.01) {
             forward = MAX_FORWARD/4;
         }
         else if (controllerMessage.joystick1.y <= -0.01 && controllerMessage.joystick1.y > -0.5) {
             forward = -MAX_FORWARD/4;
         }*/
-        double turn = abs(controllerMessage.joystick1.x) < 0.01 ? 0 : mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_TURN, MAX_TURN);
+        double turn = abs(controllerMessage.joystick2.y) < 0.1 ? 0 : mapDouble(controllerMessage.joystick2.y, -1, 1, -MAX_TURN, MAX_TURN);
         /*if (controllerMessage.joystick1.x > 0.5 && controllerMessage.joystick1.x >= 0.01) {
             turn = MAX_TURN/4;
         }
