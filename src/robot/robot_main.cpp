@@ -29,33 +29,27 @@ void loop() {
     EVERY_N_MILLIS(20) {
         //followTrajectory();
         if (freshWirelessData) {
-            double forward = abs(controllerMessage.joystick1.x) < 0.1 ? 0 : mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
-            /*if (controllerMessage.joystick1.y < 0.5 && controllerMessage.joystick1.y >= 0.01) {
-                forward = MAX_FORWARD/4;
-            }
-            else if (controllerMessage.joystick1.y <= -0.01 && controllerMessage.joystick1.y > -0.5) {
-                forward = -MAX_FORWARD/4;
-            }*/
-            double turn = abs(controllerMessage.joystick2.y) < 0.1 ? 0 : mapDouble(controllerMessage.joystick2.y, -1, 1, -MAX_TURN, MAX_TURN);
-            /*if (controllerMessage.joystick1.x > 0.5 && controllerMessage.joystick1.x >= 0.01) {
-                turn = MAX_TURN/4;
-            }
-            else if (controllerMessage.joystick1.x <= -0.01 && controllerMessage.joystick1.x > -0.5) {
-                turn = -MAX_TURN/4;
-            }*/
-            double left = -forward - turn;
-            double right = -forward + turn;
+
+            double forward = -mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
+            double turn = mapDouble(controllerMessage.joystick2.y, -1, 1, -MAX_TURN, MAX_TURN);
+
+            double left = forward - turn;
+            double right = forward + turn;
             
             updateSetpoints(left, right);
+            updateControlEffort();
         }
     }
 
     // Update PID at 200Hz
+    /**
     EVERY_N_MILLIS(5) {
         updateControlEffort();
     }
+    **/
 
     // Send and print robot values at 200Hz
+    /**
     EVERY_N_MILLIS(5) {
         //updateOdometry();
         // take angles from traction wheels only since they don't slip
@@ -82,5 +76,6 @@ void loop() {
         Serial.printf("x: %.2f, y: %.2f, theta: %.2f\n",
                     robotMessage.x, robotMessage.y, robotMessage.theta);
     }
+    **/
   
 }

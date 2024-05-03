@@ -7,19 +7,20 @@ void ControllerMessage::print() {
     Serial.printf("millis: %d\n", millis);
     Serial.printf("joystick1:\n");  joystick1.print(1);
     Serial.printf("joystick2:\n");  joystick2.print(1);
-    Serial.printf("dPad:\n");  dPad.print(1);
-    Serial.printf("buttonL: %s\n", buttonL);
-    Serial.printf("buttonR: %s\n", buttonR);
-    Serial.printf("touchPoint:\n"); touchPoint.print(1);
+    //Serial.printf("dPad:\n");  dPad.print(1);
+    //Serial.printf("buttonL: %s\n", buttonL);
+    //Serial.printf("buttonR: %s\n", buttonR);
+    //Serial.printf("touchPoint:\n"); touchPoint.print(1);
 } 
 
 bool ControllerMessage::operator==(const ControllerMessage& other) {
     return joystick1 == other.joystick1 &&
-           joystick2 == other.joystick2 &&
-           dPad == other.dPad &&
-           buttonL == other.buttonL &&
-           buttonR == other.buttonR &&
-           touchPoint == other.touchPoint;
+           //joystick2 == other.joystick2 &&
+            joystick2 == other.joystick2;
+           //dPad == other.dPad &&
+           //buttonL == other.buttonL &&
+           //buttonR == other.buttonR &&
+           //touchPoint == other.touchPoint;
 }
 
 void RobotMessage::print() {
