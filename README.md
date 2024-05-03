@@ -3,14 +3,19 @@
 
 
 # TODO
-Electromagnet + test on roof- Amir 
-IR integration + testing - Amy
-Singularity - Avani + Baran
-Test with additional webcam - 
-Command to specific z height + print out z height - Kemi (Display TIM height)
+~~Electromagnet + test on roof- Amir~~  
+~~IR integration + testing - Amy~~  
+~~Singularity - Avani + Baran~~  
+~~Test with additional webcam -~~  
+~~Command to specific z height + print out z height - Kemi (Display TIM height)~~  
+Make controls smoother  
+Automatic Rubble dropoff
+Speed control for precise movement (mobile and UR5)
+Practice runs !!
+
+
 Other drivers: Avani, Baran, Kemi
 
-1. debug gripper
 
 
 # Done
