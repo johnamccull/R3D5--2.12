@@ -30,7 +30,8 @@ void loop() {
         //followTrajectory();
         if (freshWirelessData) {
 
-            double forward = -mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
+            //double forward = -mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
+            double forward = -quadraticMapDouble(controllerMessage.joystick1.x, 1, MAX_FORWARD);
             double turn = mapDouble(controllerMessage.joystick2.y, -1, 1, -MAX_TURN, MAX_TURN);
 
             double left = forward - turn;
