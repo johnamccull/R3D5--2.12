@@ -29,13 +29,16 @@ void loop() {
     EVERY_N_MILLIS(20) {
         if (freshWirelessData) {
 
-            //double forward = -mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
-            double forward = -quadraticMapDouble(controllerMessage.joystick1.x, 1, MAX_FORWARD);
-            double turn = mapDouble(controllerMessage.joystick2.y, -1, 1, -MAX_TURN, MAX_TURN);
+           
+            //double forward = -quadraticMapDouble(controllerMessage.joystick2.x, 1, MAX_FORWARD);
+            //double turn = -mapDouble(controllerMessage.joystick1.y, -1, 1, -MAX_TURN, MAX_TURN);
+            //double left = forward - turn;
+            //double right = forward + turn;
 
-            double left = forward - turn;
-            double right = forward + turn;
-            
+            // tank mode
+            double left = quadraticMapDouble(controllerMessage.joystick1.x, 1, MAX_FORWARD);
+            double right = -quadraticMapDouble(controllerMessage.joystick2.x, 1, MAX_FORWARD);
+
             updateSetpoints(left, right);
             updateControlEffort();
             

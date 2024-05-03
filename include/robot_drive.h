@@ -9,7 +9,7 @@
 #define pidTau 0.1
 
 #define MAX_FORWARD 8
-#define MAX_TURN 5
+#define MAX_TURN 3
 
 void setupDrive();
 void updateSetpoints(double left, double right);
