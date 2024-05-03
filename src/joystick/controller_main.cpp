@@ -43,29 +43,25 @@ void loop() {
         if (abs(joystick1_reading.x) < JOYSTICK_DEADZONE) {
             joystick1_reading.x = 0;
         }
-
         if (abs(joystick2_reading.y) < JOYSTICK_DEADZONE) {
             joystick2_reading.y = 0;
         }
 
         // not dealing with joystick1_reading.y and joystick2_reading.x since those are not used by robot
 
-        // high speed mode (default)
+        Serial.println(digitalRead(V_PIN));        
+
+        // if low speed mode
+        if (!digitalRead(V_PIN)){
+            joystick1_reading.x *= SLOW_FACTOR;
+            joystick1_reading.y *= SLOW_FACTOR;
+            joystick2_reading.x *= SLOW_FACTOR;
+            joystick2_reading.y *= SLOW_FACTOR;
+        }
+
         controllerMessage.joystick1 = joystick1_reading;
         controllerMessage.joystick2 = joystick2_reading;
 
-
-        Serial.println(digitalRead(V_PIN));        
-
-        //if low speed mode
-        if (!digitalRead(V_PIN)){
-            controllerMessage.joystick1.x *= SLOW_FACTOR;
-            controllerMessage.joystick1.y *= SLOW_FACTOR;
-            controllerMessage.joystick2.x *= SLOW_FACTOR;
-            controllerMessage.joystick2.y *= SLOW_FACTOR;
-        }
-
-        
         if (!(prevControllerMessage == controllerMessage)) {
             sendControllerData();
             prevControllerMessage = controllerMessage;
