@@ -16,12 +16,15 @@
 #define MAX_US 2500
 
 #define TEMP_THRESHOLD 30
-#define PRINT_TEMPS 1
+#define PRINT_TEMPS 0
 
 #define CLAW_OPEN "v"
 #define CLAW_CLOSE "c"
 #define MAG_ON "m"
 #define MAG_OFF "n"
+
+#define CLAW_OPEN_ANG 160 //120 //40 //80
+#define CLAW_CLOSE_ANG 350
 
 #include <Wire.h> 
 #include <Adafruit_AMG88xx.h>
@@ -82,10 +85,10 @@ void loop() {
         command.trim();  // Remove any trailing newline or whitespace
 
         if (command == CLAW_OPEN) {  // Open claw
-            clawAngle(90);  // Open claw angle
+            clawAngle(CLAW_OPEN_ANG);  // Open claw angle 90
             Serial.println("Claw Opened");
         } else if (command == CLAW_CLOSE) { // Close claw
-            clawAngle(350);   // Close claw angle
+            clawAngle(CLAW_CLOSE_ANG);   // Close claw angle 350
             Serial.println("Claw Closed");
         } else if (command == MAG_ON) { // Turn on electromagnet
             turnOnMagnet(true);
