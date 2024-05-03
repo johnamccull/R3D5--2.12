@@ -16,7 +16,7 @@ double mapDouble(double input_value, double in_min, double in_max, double out_mi
  * final output value = f(x) [upward sloping parabola] for x in the upper half of the output  (x >= center value of output range),
  *                      otherwise -f(x) for x in the lower half of the output range (x < center value of output range), 
  *    and f(x) is such that:
- *        vertex occurs at x = center of output range
+ *        vertex is f(x = center of output range) = 0
  *        f(x=out_max) = out_max 
  *        f(x=out_min) = out_min
  * 
