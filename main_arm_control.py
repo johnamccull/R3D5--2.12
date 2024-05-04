@@ -6,12 +6,12 @@ import math
 PRINT_SPEED = False
 
 # Robot IP address
-IP_UR5 = "169.254.157.0"
+IP_UR5 = "169.254.157.1" #"192.168.0.88" #"169.254.157.0"
 
 # Components
 USE_ROBOT = True #True #True
 USE_CONTROLLER = True
-USE_GRIPPER = True 
+USE_GRIPPER = False #True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -219,10 +219,20 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
    
     # Speed control loop
     while True:
+        theta = 0.0 # Ange in cylindrical coordinates
+        
+        if USE_ROBOT:
+            # Get current pose and z position
+            current_poseL_d = rtde_r.getActualTCPPose()
+            offset_tim = 17.2 
+            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
+
+            theta = math.atan2(current_poseL_d[0], current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+        
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2]) #SPEED_ANG_MAX
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
 
         if current_speedL_d is None:
             break
@@ -242,9 +252,9 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
         # Send speed command (or stop) to robot, and other commands
         if USE_ROBOT:
             # Get current pose and z position
-            current_poseL_d = rtde_r.getActualTCPPose()
-            offset_tim = 17.2 
-            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
+            # current_poseL_d = rtde_r.getActualTCPPose()
+            # offset_tim = 17.2 
+            # current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
             
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
