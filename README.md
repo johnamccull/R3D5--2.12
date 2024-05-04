@@ -3,14 +3,29 @@
 
 
 # TODO
-Electromagnet + test on roof- Amir 
-IR integration + testing - Amy
-Singularity - Avani + Baran
-Test with additional webcam - 
-Command to specific z height + print out z height - Kemi (Display TIM height)
+~~Electromagnet + test on roof- Amir~~  
+~~IR integration + testing - Amy~~  
+~~Singularity - Avani + Baran~~  
+~~Test with additional webcam -~~  
+~~Command to specific z height + print out z height - Kemi (Display TIM height)~~  
+Make controls smoother  
+Automatic Rubble dropoff
+Speed control for precise movement (mobile and UR5)
+Practice runs !!
+
+
 Other drivers: Avani, Baran, Kemi
 
-1. debug gripper
+
+----------------
+
+--> claw opened a bit and dropped TIM
+
+1. USB-C cable is too short
+3. Magnet doesn't engage unless perfectly parallel (don't change orientation after start pose)
+4. Difficult to see depth with camera - perhaps move backwards or have some form of depth sensor (use reflection to judge depth)
+----------------
+
 
 
 # Done
@@ -18,6 +33,8 @@ Other drivers: Avani, Baran, Kemi
 2. Integrate with IR sensor
 3. Have button that goes down to particular height to pick tim up, then up to a particular height to allow movement -> Can move down, but not up yet
 4. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
+---> Print-outs make it difficult to see useful information
+---> Claw opens too far and knocks ESP-32 out
 
 
 
@@ -33,7 +50,14 @@ Procedure for setting up before starting the competition.
 
 1. Move the robot to home position
 2. Mount the gripper
-3. 
+3. Press rst on the PCB
+4. Start the serial monitor 
+    4a. Put hand in front of IR sensor and make sure gripper serial is working ('I see something hot' should appear)
+5. Close the grippers all the way manually
+6. Start the python file
+7. Open and close grippers to make sure ROM is correct
+8. Turn magnet on and off
+8. 
 
 
 # UR Arm

@@ -3,7 +3,7 @@ import PS4_Control as ps4
 import math
 
 # PARAMETERS
-PRINT_SPEED = True
+PRINT_SPEED = False
 
 # Robot IP address
 IP_UR5 = "169.254.157.0"
@@ -63,7 +63,7 @@ INC_DELTA_HEIGHT = 0.01
 INC_DELTA_ROT = 0.01
 
 SPEED_L = 0.1 #1.0 #3.0 #0.5 #0.25
-SPEED_L_MAX = 0.4
+SPEED_L_MAX = 0.2 #0.4
 SPEED_ANG = 0.2 #0.1
 SPEED_ANG_MAX = 0.4
 
