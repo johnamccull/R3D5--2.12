@@ -1,4 +1,5 @@
 #include <ESP32Servo.h>
+#include "Adafruit_VL53L0X.h"
 #include <UMS3.h>
 #include "util.h"
 #include "pinout.h"
@@ -30,6 +31,7 @@
 #include <Adafruit_AMG88xx.h>
 #define TCAADDR 0x70
 Adafruit_AMG88xx amg;
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
@@ -72,6 +74,7 @@ void setup() {
 
     // Setup IR sensor
     irSetup();
+    // Setup ToF sensor 
 
     delay(100); // let sensors boot up
 
@@ -148,6 +151,23 @@ void irSetup() {
     // delay(100); // let sensor boot up
 }
 
+void tofSetup() {
+    Serial.begin(115200);
+
+  // wait until serial port opens for native USB devices
+  while (! Serial) {
+    delay(1);
+  }
+  
+  Serial.println("Adafruit VL53L0X test");
+  if (!lox.begin()) {
+    Serial.println(F("Failed to boot VL53L0X"));
+    while(1);
+  }
+  // power 
+  Serial.println(F("VL53L0X API Simple Ranging example\n\n")); 
+
+}
 
 void irRead() {   
     //read all the pixels

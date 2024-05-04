@@ -216,6 +216,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
     z_down = False #False = up, True = down 
+    #Roofs = ~34, 24.7
    
     # Speed control loop
     while True:
