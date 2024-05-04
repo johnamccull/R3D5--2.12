@@ -82,7 +82,7 @@ void loop() {
         command.trim();  // Remove any trailing newline or whitespace
 
         if (command == CLAW_OPEN) {  // Open claw
-            clawAngle(90);  // Open claw angle
+            clawAngle(110);  // Open claw angle
             Serial.println("Claw Opened");
         } else if (command == CLAW_CLOSE) { // Close claw
             clawAngle(350);   // Close claw angle
