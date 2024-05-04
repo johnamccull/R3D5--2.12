@@ -18,6 +18,13 @@ Joystick joystick2(JOYSTICK2_X_PIN, JOYSTICK2_Y_PIN); // turn
 // #define A_PIN 9 // autonomous mode
 #define SLOW_FACTOR 0.2
 
+const int buffer_length = 8;
+double joystick1_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+double joystick2_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+unsigned long iter = 0; 
+const int n = 3; // number of recent raw joystick readings to use to compute a filtered value
+
+
 void setup() {
     Serial.begin(115200);
 
@@ -43,17 +50,38 @@ void loop() {
         if (abs(joystick1_reading.x) < JOYSTICK_DEADZONE) {
             joystick1_reading.x = 0;
         }
+        if (abs(joystick1_reading.y) < JOYSTICK_DEADZONE) {
+            joystick1_reading.y = 0;
+        }
+        if (abs(joystick2_reading.x) < JOYSTICK_DEADZONE) {
+            joystick2_reading.x = 0;
+        }
         if (abs(joystick2_reading.y) < JOYSTICK_DEADZONE) {
             joystick2_reading.y = 0;
+        }        
+
+        // insert readings into buffers
+        int index_buffer = iter % buffer_length;
+        joystick1_buffer[index_buffer] = joystick1_reading.x;
+        joystick2_buffer[index_buffer] = joystick2_reading.y;
+        iter += 1;
+
+        // filter
+        // for now just moving average on the most recent n values
+        double joystick1_x_filtered = joystick1_reading.x;
+        if (index_buffer >= n-1) {
+            joystick1_x_filtered = 0;
+            for (int i = index_buffer - (n-1); i <= index_buffer ; i++) {
+                joystick1_x_filtered += joystick1_buffer[i];
+            } 
+            joystick1_x_filtered /= n;
         }
 
-        // not dealing with joystick1_reading.y and joystick2_reading.x since those are not used by robot
-
         Serial.println(digitalRead(V_PIN));        
-
         // if low speed mode
         if (!digitalRead(V_PIN)){
             joystick1_reading.x *= SLOW_FACTOR;
+            //joystick1_x_filtered *= SLOW_FACTOR;
             joystick1_reading.y *= SLOW_FACTOR;
             joystick2_reading.x *= SLOW_FACTOR;
             joystick2_reading.y *= SLOW_FACTOR;
@@ -61,6 +89,8 @@ void loop() {
 
         controllerMessage.joystick1 = joystick1_reading;
         controllerMessage.joystick2 = joystick2_reading;
+
+        
 
         if (!(prevControllerMessage == controllerMessage)) {
             sendControllerData();
