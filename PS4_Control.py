@@ -4,6 +4,8 @@ import numpy as np
 PRINT = False
 MAPPING_LINUX = True # Harvey's controller key mappings are different to Baran's. Switch here/DO NOT JUST CHANGE THE BUTTONS BELOW
 
+CS_CYLINDRICAL = True
+
 def smooth_data(data, threshold=0.1):
     """
     Smooths joystick data and removes drift.
@@ -112,7 +114,7 @@ def controller_init():
 
 
 # Get input from the PS4 controller
-def get_controller_input(joystick):
+def get_controller_input(joystick, arm_theta):
     # Main loop
     # running = True
     # while running:
@@ -180,9 +182,18 @@ def get_controller_input(joystick):
         r_pad = [axes[3],axes[4],buttons[12]] #axes[2] axes[3] buttons[8]
     
     #Planar Motion Assingment
-    Vx = -l_pad[0] #Left Joystick Horizontal Axis
-    Vy = l_pad[1] #Left Joystick Verical Axis
-    Vz = -r_pad[1] #Right Joystick Vertical Axis
+    # Different assignments if cylindrical or cartesian
+    if CS_CYLINDRICAL:
+        Vtheta = l_pad[0] #Left Joystick Horizontal Axis
+        Vr = l_pad[1] #Left Joystick Verical Axis
+        
+        Vx = Vr*np.cos(arm_theta) - Vtheta*np.sin(arm_theta) #TODO: TESTTTTTTTTTTTTTTTTTT
+        Vy = Vr*np.sin(arm_theta) + Vtheta*np.cos(arm_theta)
+        Vz = -r_pad[1] #Right Joystick Vertical Axis
+    else: # Cartesian
+        Vx = -l_pad[0] #Left Joystick Horizontal Axis
+        Vy = l_pad[1] #Left Joystick Verical Axis
+        Vz = -r_pad[1] #Right Joystick Vertical Axis
     
     #Rotational Motion Assingment 
     Rx = 0
@@ -287,8 +298,8 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
     return stateList
 
 # Get the scaled inputs from the controller
-def get_controller_input_scaled(joystick, v_max_planar, v_max_ang):
-    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp = get_controller_input(joystick)
+def get_controller_input_scaled(joystick, v_max_planar, v_max_ang, arm_theta):
+    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp = get_controller_input(joystick, arm_theta)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 

@@ -8,25 +8,18 @@
 ~~Singularity - Avani + Baran~~  
 ~~Test with additional webcam -~~  
 ~~Command to specific z height + print out z height - Kemi (Display TIM height)~~  
-Make controls smoother  
+~~Make controls smoother ~~
+
 Automatic Rubble dropoff
 Speed control for precise movement (mobile and UR5)
 Practice runs !!
 
+1. change to cylindrical coordinates 
+2. add time of flight sensor (since depth is hard to see). This should help with protective stop when there’s too much force 
+4. closed loop potentially with time of flight to be able to take the roof off - automate it
+
 
 Other drivers: Avani, Baran, Kemi
-
-
-----------------
-
---> claw opened a bit and dropped TIM
-
-1. USB-C cable is too short
-3. Magnet doesn't engage unless perfectly parallel (don't change orientation after start pose)
-4. Difficult to see depth with camera - perhaps move backwards or have some form of depth sensor (use reflection to judge depth)
-----------------
-
-
 
 # Done
 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
@@ -35,14 +28,18 @@ Other drivers: Avani, Baran, Kemi
 4. Keep robot hand parallel with ground (this should be easy - just start it parallel to the ground!)
 ---> Print-outs make it difficult to see useful information
 ---> Claw opens too far and knocks ESP-32 out
-
-
+---> claw opened a bit and dropped TIM
+1. USB-C cable is too short
+3. Magnet doesn't engage unless perfectly parallel (don't change orientation after start pose)
+4. Difficult to see depth with camera - perhaps move backwards or have some form of depth sensor (use reflection to judge depth)
+----------------
 
 
 
 # Extra
 5. Define some autonomous behaviors/trajectories for scanning for TIM, picking up and dropping off rubble and picking up and dropping off TIM 
 (this includes actuating/deactuating gripper and electromagnet and mapping these to controller/keyboard inputs too)
+
 
 
 # Setup Procedure 
@@ -58,6 +55,11 @@ Procedure for setting up before starting the competition.
 7. Open and close grippers to make sure ROM is correct
 8. Turn magnet on and off
 8. 
+
+
+# Roles
+Amy and Avani's computers work with camera
+-> Change timeouts on computers
 
 
 # UR Arm
