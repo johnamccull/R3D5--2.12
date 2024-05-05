@@ -14,7 +14,6 @@ Automatic Rubble dropoff
 Speed control for precise movement (mobile and UR5)
 Practice runs !!
 
-1. change to cylindrical coordinates 
 2. add time of flight sensor (since depth is hard to see). This should help with protective stop when there’s too much force 
 4. closed loop potentially with time of flight to be able to take the roof off - automate it
 
@@ -32,6 +31,7 @@ Other drivers: Avani, Baran, Kemi
 1. USB-C cable is too short
 3. Magnet doesn't engage unless perfectly parallel (don't change orientation after start pose)
 4. Difficult to see depth with camera - perhaps move backwards or have some form of depth sensor (use reflection to judge depth)
+5. test cylindrical coordinates
 ----------------
 
 
