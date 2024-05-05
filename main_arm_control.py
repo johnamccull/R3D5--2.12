@@ -291,27 +291,54 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
         def pick_up_roof():
             send_gripper_cmd(gripper_serial, MAG_ON)
             time.sleep(100)
-            tofValue = #value taken from tof sensor
-            tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
-            eps = 0.0005 #0.5 mm epsilon 
-            if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
-                try:
-                    tofTarget = old_z
-                except: 
-                    tofTarget = tofTarget + 0.05 
-                else:
-                    old_z = current_poseL_d[2]
-            tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
+            eps = 0.0005 #0.5 mm epsilon
+            force_target = 10 #amount of force to push down on the roof with
+            forces = rtde_r.actual_TCP_force()
+            z_force = forces[2]
+            if (z_force <= force_target + eps) and (z_force >= force_target - eps):
+                 try:
+                     z_move = old_z
+                 except: 
+                     z_move = z_move + 0.05 
+                 else:
+                     old_z = current_poseL_d[2]
+                     
+            tofTargetPickUp = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
             rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
             time.sleep(100) #before moving to next position 
 
-            tofTargetUp = tofTarget + 0.05
-            moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
+            z_move = z_move + 0.05
+            moveUpPosition = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
             rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
             trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
             rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
             time.sleep(100)
             send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
+
+        # def pick_up_roof():
+        #     send_gripper_cmd(gripper_serial, MAG_ON)
+        #     time.sleep(100)
+        #     tofValue = #value taken from tof sensor
+        #     tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
+        #     eps = 0.0005 #0.5 mm epsilon 
+        #     if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
+        #         try:
+        #             tofTarget = old_z
+        #         except: 
+        #             tofTarget = tofTarget + 0.05 
+        #         else:
+        #             old_z = current_poseL_d[2]
+        #     tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
+        #     rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
+        #     time.sleep(100) #before moving to next position 
+
+        #     tofTargetUp = tofTarget + 0.05
+        #     moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
+        #     rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
+        #     trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
+        #     rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
+        #     time.sleep(100)
+        #     send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
 
     elif keyboard.is_pressed(KEY_QUIT): 
         print('Quit key pressed')
