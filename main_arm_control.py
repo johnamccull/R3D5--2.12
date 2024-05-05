@@ -1,6 +1,7 @@
 import time
 import PS4_Control as ps4
 import math
+import keyboard
 
 # PARAMETERS
 PRINT_SPEED = False
@@ -15,9 +16,6 @@ USE_GRIPPER = False #True
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
-
-if not USE_CONTROLLER:
-    import keyboard 
 
 if USE_GRIPPER:
     import serial
@@ -50,6 +48,19 @@ KEY_ANGSPEEDP = 'y'
 KEY_ANGSPEEDM = 'h'
 
 KEY_QUIT = 'q'
+
+KEY_ROOF1 = "1" #house 1 (right)
+KEY_ROOF2 = "2" #house 2 (middle)
+KEY_ROOF3 = "3" #house 3 (left)
+
+KEY_ROOF_A = "4" #house 1
+KEY_ROOF_B = "5"
+KEY_ROOF_C = "6" #house 2
+KEY_ROOF_D = "7"
+KEY_ROOF_E = "8" #house 3
+KEY_ROOF_F = "9"
+
+KEY_PICKUP_ROOF = "0" #go to roof and pickup 
 
 CLAW_OPEN = "v" # 'share' toggles gripper
 CLAW_CLOSE = "c"
@@ -202,7 +213,72 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     elif keyboard.is_pressed(KEY_ANGSPEEDM):
         new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
     
-    if keyboard.is_pressed(KEY_QUIT): 
+    if keyboard.is_pressed(KEY_ROOF1):
+        roof_1 = []
+        rtde_c.moveL(roof_1, SPEED_J, ACCEL_J, False)
+
+    elif keyboard.is_pressed(KEY_ROOF2):
+        roof_2 = []
+        rtde_c.moveL(roof_2, SPEED_J, ACCEL_J, False)
+    
+    if keyboard.is_pressed(KEY_ROOF3):
+        roof_3 = []
+        rtde_c.moveL(roof_3, SPEED_J, ACCEL_J, False)
+
+    elif keyboard.is_pressed(KEY_ROOF_A):
+        roof_a = []
+        rtde_c.moveL(roof_a, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_B):
+        roof_b = []
+        rtde_c.moveL(roof_b, SPEED_J, ACCEL_J, False)
+    
+    elif keyboard.is_pressed(KEY_ROOF_C):
+        roof_c = []
+        rtde_c.moveL(roof_c, SPEED_J, ACCEL_J, False)
+    
+    if keyboard.is_pressed(KEY_ROOF_D):
+        roof_d = []
+        rtde_c.moveL(roof_d, SPEED_J, ACCEL_J, False)
+
+    elif keyboard.is_pressed(KEY_ROOF_E):
+        roof_e = []
+        rtde_c.moveL(roof_e, SPEED_J, ACCEL_J, False)
+    
+    if keyboard.is_pressed(KEY_ROOF_F):
+        roof_f = []
+        rtde_c.moveL(roof_f, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_PICKUP_ROOF):
+        current_poseL_d = rtde_r.getActualTCPPose()
+        def pick_up_roof():
+            rtde_c.moveL(, SPEED_L, ACCEL_J, False)
+            time.sleep(100)
+            send_gripper_cmd(gripper_serial, MAG_ON)
+            time.sleep(100)
+            tofValue = #value taken from tof sensor
+            tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
+            eps = 0.0005 #0.5 mm epsilon 
+            if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
+                try:
+                    tofTarget = old_z
+                except: 
+                    tofTarget = tofTarget + 0.05 
+                else:
+                    old_z = current_poseL_d[2]
+            tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
+            rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
+            time.sleep(100) #before moving to next position 
+
+            tofTargetUp = tofTarget + 0.05
+            moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
+            rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
+            trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
+            rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
+            time.sleep(100)
+            send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
+
+    elif keyboard.is_pressed(KEY_QUIT): 
         print('Quit key pressed')
         new_setpoint = None  # finishing the loop
 
@@ -233,7 +309,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
         #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp, roofPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
 
         if current_speedL_d is None:
             break
@@ -252,11 +328,6 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
         # Send speed command (or stop) to robot, and other commands
         if USE_ROBOT:
-            # Get current pose and z position
-            # current_poseL_d = rtde_r.getActualTCPPose()
-            # offset_tim = 17.2 
-            # current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
-            
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
                 rtde_c.speedStop(ACCEL_L_STOP)
@@ -287,22 +358,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                
                 targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
                 rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-        if zPickUp:
-                # single axis target
-                target = offset_tim / 100 # Target Height
-                eps = 0.005 # 5 mm epsilon 
-                
-                if (current_poseL_d[2] <= target + eps) and (current_poseL_d[2] >= target - eps):
-                    try:
-                        target = old_z_height
-                    except: 
-                        target = target + 0.25 
-                else:
-                    old_z_height = current_poseL_d[2]
-               
-                targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
-                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-        
+
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
             # Toggle gripper 
