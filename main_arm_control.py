@@ -289,8 +289,6 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     if keyboard.is_pressed(KEY_PICKUP_ROOF):
         current_poseL_d = rtde_r.getActualTCPPose()
         def pick_up_roof():
-            rtde_c.moveL(, SPEED_L, ACCEL_J, False)
-            time.sleep(100)
             send_gripper_cmd(gripper_serial, MAG_ON)
             time.sleep(100)
             tofValue = #value taken from tof sensor
