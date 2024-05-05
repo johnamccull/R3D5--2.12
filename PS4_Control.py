@@ -190,6 +190,7 @@ def get_controller_input(joystick, arm_theta):
         Vx = Vr*np.cos(arm_theta) - Vtheta*np.sin(arm_theta) #TODO: TESTTTTTTTTTTTTTTTTTT
         Vy = Vr*np.sin(arm_theta) + Vtheta*np.cos(arm_theta)
         Vz = -r_pad[1] #Right Joystick Vertical Axis
+
     else: # Cartesian
         Vx = -l_pad[0] #Left Joystick Horizontal Axis
         Vy = l_pad[1] #Left Joystick Verical Axis

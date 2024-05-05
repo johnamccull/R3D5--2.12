@@ -215,7 +215,6 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     increment = [0.0, 0.0, 0.0]
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
-    z_down = False #False = up, True = down 
     #Roofs = ~34, 24.7
    
     # Speed control loop
@@ -228,7 +227,8 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
             offset_tim = 17.2 
             current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
-            theta = math.atan2(current_poseL_d[0], current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+
         
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
