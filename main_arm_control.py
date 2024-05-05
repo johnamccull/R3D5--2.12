@@ -240,40 +240,50 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
         new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
     
     if keyboard.is_pressed(KEY_ROOF1):
-        roof_1 = []
-        rtde_c.moveL(roof_1, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_1, SPEED_J, ACCEL_J, False)
 
     elif keyboard.is_pressed(KEY_ROOF2):
-        roof_2 = []
-        rtde_c.moveL(roof_2, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_2, SPEED_J, ACCEL_J, False)
     
     if keyboard.is_pressed(KEY_ROOF3):
-        roof_3 = []
-        rtde_c.moveL(roof_3, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_3, SPEED_J, ACCEL_J, False)
 
     elif keyboard.is_pressed(KEY_ROOF_A):
-        roof_a = []
-        rtde_c.moveL(roof_a, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_A, SPEED_J, ACCEL_J, False)
 
     if keyboard.is_pressed(KEY_ROOF_B):
-        roof_b = []
-        rtde_c.moveL(roof_b, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_B, SPEED_J, ACCEL_J, False)
     
     elif keyboard.is_pressed(KEY_ROOF_C):
-        roof_c = []
-        rtde_c.moveL(roof_c, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_C, SPEED_J, ACCEL_J, False)
     
     if keyboard.is_pressed(KEY_ROOF_D):
-        roof_d = []
-        rtde_c.moveL(roof_d, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_D, SPEED_J, ACCEL_J, False)
 
     elif keyboard.is_pressed(KEY_ROOF_E):
-        roof_e = []
-        rtde_c.moveL(roof_e, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_E, SPEED_J, ACCEL_J, False)
     
     if keyboard.is_pressed(KEY_ROOF_F):
-        roof_f = []
-        rtde_c.moveL(roof_f, SPEED_J, ACCEL_J, False)
+        rtde_c.moveL(POS_F, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_G):
+        rtde_c.moveL(POS_G, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_H):
+        rtde_c.moveL(POS_H, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_I):
+        rtde_c.moveL(POS_I, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_J):
+        rtde_c.moveL(POS_J, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_K):
+        rtde_c.moveL(POS_K, SPEED_J, ACCEL_J, False)
+
+    if keyboard.is_pressed(KEY_ROOF_L):
+        rtde_c.moveL(POS_L, SPEED_J, ACCEL_J, False)
+    
 
     if keyboard.is_pressed(KEY_PICKUP_ROOF):
         current_poseL_d = rtde_r.getActualTCPPose()
