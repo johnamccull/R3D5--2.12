@@ -49,21 +49,47 @@ KEY_ANGSPEEDM = 'h'
 
 KEY_QUIT = 'q'
 
-KEY_ROOF1 = "1" #house 1 (right)
-KEY_ROOF2 = "2" #house 2 (middle)
+KEY_ROOF1 = "1" #house 1 (middle)
+KEY_ROOF2 = "2" #house 2 (right)
 KEY_ROOF3 = "3" #house 3 (left)
 
-KEY_ROOF_A = "4" #house 1
-KEY_ROOF_B = "5"
-KEY_ROOF_C = "6" #house 2
-KEY_ROOF_D = "7"
-KEY_ROOF_E = "8" #house 3
-KEY_ROOF_F = "9"
+KEY_ROOF_A = "A" #house 1 orientation 1
+KEY_ROOF_B = "B"
+KEY_ROOF_C = "C" #house 1 orientation 2
+KEY_ROOF_D = "D"
+KEY_ROOF_E = "E" #house 2 orientation 1
+KEY_ROOF_F = "F"
+KEY_ROOF_G = "G" #house 2 orientation 2
+KEY_ROOF_H = "H"
+KEY_ROOF_I = "I" #house 3 orientation 1
+KEY_ROOF_J = "J"
+KEY_ROOF_K = "K" #house 3 orientation 2
+KEY_ROOF_L = "L"
 
 KEY_PICKUP_ROOF = "0" #go to roof and pickup 
 
+## Tool Position of roofs for each house for pickup
+th = 1000
+POS_A = [451/th, 329.5/th, 26/th, 3.134, 0.187, 0.061]
+POS_B = [417.6/th, 585.2/th, 128/th, 2.827, 1.388, 0.046]
+POS_C = [406.85/th, 205.4/th, 128.2/th, 0.884, 3.036, 0.011]
+POS_D = [406.03/th, 458.5/th, 27.39/th, 0.074, -3.117, -0.015]
+POS_E = [352.2/th, -445.3/th, 26/th, 3.040, -0.736, 0.060]
+POS_F = [622.5/th, -387.8/th, 129.7/th, 3.11, -0.292, 0.094]
+POS_G = [219.8/th, -469.1/th, 128.5/th, 2.559, -1.757, 0.042]
+POS_H = [485.3/th, -395.3/th, 27.9/th, 2.899, -1.045, 0.057]
+POS_I = [-297.4/th, 485.3/th, 24.6/th, 2.351, 2.109, 0.041]
+POS_J = [-528.5/th, 371.9/th, 124.3/th, 0.434, 3.17, 0.003]
+POS_K = [-293.6/th, 471.1/th, 126.1/th, 2.612, 1.779, 0.068]
+POS_L = [-503.4/th, 424.7/th, 24.5/th, 2.489, 1.962, 0.029]
+# Positions of each house for heating
+POS_1 = [465.8/th, 457.34/th, 196.9/th, 2.968, 1.106, 0.045]
+POS_2 = [410.6/th, -458.1/th, 134.3/th, 2.594, -1.885, 0.011]
+POS_3 = [-381.7/th, 452.5/th, 142.2/th, 1.085, 3.023, -0.202]
+
+
 CLAW_OPEN = "v" # 'share' toggles gripper
-CLAW_CLOSE = "c"
+CLAW_CLOSE = "x"
 MAG_ON = "m" # 'options' toggles EM
 MAG_OFF = "n"
 
