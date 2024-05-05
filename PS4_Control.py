@@ -184,8 +184,8 @@ def get_controller_input(joystick, arm_theta):
     #Planar Motion Assingment
     # Different assignments if cylindrical or cartesian
     if CS_CYLINDRICAL:
-        Vtheta = l_pad[0] #Left Joystick Horizontal Axis
-        Vr = l_pad[1] #Left Joystick Verical Axis
+        Vtheta = l_pad[1] #Left Joystick Horizontal Axis
+        Vr = l_pad[0] #Left Joystick Verical Axis
         
         Vx = Vr*np.cos(arm_theta) - Vtheta*np.sin(arm_theta) #TODO: TESTTTTTTTTTTTTTTTTTT
         Vy = Vr*np.sin(arm_theta) + Vtheta*np.cos(arm_theta)
