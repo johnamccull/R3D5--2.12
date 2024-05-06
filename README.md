@@ -22,7 +22,7 @@ Ottavia Personeni,
 ---> Run on ESP and translates controller commands into movements to control servos and magnet
 
 ## Mobile Robot
-(please checkout to mobile-robot branch and read respective README.m
+(please checkout to mobile-robot branch and read respective README)
 
 # Operators
 -Mobile Robot Driver: John McCullough  
