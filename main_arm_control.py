@@ -27,25 +27,25 @@ baud_rate = 115200
 timeout = 2  # Timeout for serial communication
 
 # Keyboard control directions and commands
-KEY_XM = 'f' #'s'
-KEY_XP = 's' #'f'
-KEY_YM = 'e' #'d'
-KEY_YP = 'd' #'e'
+# KEY_XM = 'f' #'s'
+# KEY_XP = 's' #'f'
+# KEY_YM = 'e' #'d'
+# KEY_YP = 'd' #'e'
 
-KEY_ZP = 'i'
-KEY_ZM = 'k'
+# KEY_ZP = 'i'
+# KEY_ZM = 'k'
 
-KEY_PITCHP = 'u'
-KEY_PITCHM = 'o'
-KEY_ROLLP = 'j'
-KEY_ROLLM = 'l'
-KEY_YAWP = 'm'
-KEY_YAWM = '.'
+# KEY_PITCHP = 'u'
+# KEY_PITCHM = 'o'
+# KEY_ROLLP = 'j'
+# KEY_ROLLM = 'l'
+# KEY_YAWP = 'm'
+# KEY_YAWM = '.'
 
-KEY_SPEEDP = 't'
-KEY_SPEEDM = 'g'
-KEY_ANGSPEEDP = 'y'
-KEY_ANGSPEEDM = 'h'
+# KEY_SPEEDP = 't'
+# KEY_SPEEDM = 'g'
+# KEY_ANGSPEEDP = 'y'
+# KEY_ANGSPEEDM = 'h'
 
 KEY_QUIT = 'q'
 
@@ -163,55 +163,55 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     new_speed = speed
     new_increment = increment
     
-    if keyboard.is_pressed(KEY_XM):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
+    # if keyboard.is_pressed(KEY_XM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
 
-    elif keyboard.is_pressed(KEY_XP):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
+    # elif keyboard.is_pressed(KEY_XP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
 
-    if keyboard.is_pressed(KEY_YP):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
+    # if keyboard.is_pressed(KEY_YP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
 
-    elif keyboard.is_pressed(KEY_YM):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
+    # elif keyboard.is_pressed(KEY_YM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
 
-    if keyboard.is_pressed(KEY_ZP):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
+    # if keyboard.is_pressed(KEY_ZP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
 
-    elif keyboard.is_pressed(KEY_ZM):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
+    # elif keyboard.is_pressed(KEY_ZM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
 
-    if keyboard.is_pressed(KEY_PITCHP):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_PITCHP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_PITCHM):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_PITCHM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_ROLLP):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_ROLLP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_ROLLM):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_ROLLM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_YAWP):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_YAWP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_YAWM):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_YAWM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_SPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+    # if keyboard.is_pressed(KEY_SPEEDP):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
         
-    elif keyboard.is_pressed(KEY_SPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+    # elif keyboard.is_pressed(KEY_SPEEDM):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
 
-    if keyboard.is_pressed(KEY_ANGSPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
+    # if keyboard.is_pressed(KEY_ANGSPEEDP):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
     
-    elif keyboard.is_pressed(KEY_ANGSPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
+    # elif keyboard.is_pressed(KEY_ANGSPEEDM):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
     
     if keyboard.is_pressed(KEY_ROOF1):
         roof_1 = []
@@ -248,35 +248,40 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     if keyboard.is_pressed(KEY_ROOF_F):
         roof_f = []
         rtde_c.moveL(roof_f, SPEED_J, ACCEL_J, False)
-
+    
     if keyboard.is_pressed(KEY_PICKUP_ROOF):
-        current_poseL_d = rtde_r.getActualTCPPose()
-        def pick_up_roof():
-            rtde_c.moveL(, SPEED_L, ACCEL_J, False)
-            time.sleep(100)
-            send_gripper_cmd(gripper_serial, MAG_ON)
-            time.sleep(100)
-            tofValue = #value taken from tof sensor
-            tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
-            eps = 0.0005 #0.5 mm epsilon 
-            if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
-                try:
-                    tofTarget = old_z
-                except: 
-                    tofTarget = tofTarget + 0.05 
-                else:
-                    old_z = current_poseL_d[2]
-            tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
-            rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
-            time.sleep(100) #before moving to next position 
+        def ()
+        rtde_c.forceMode()
 
-            tofTargetUp = tofTarget + 0.05
-            moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
-            rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
-            trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
-            rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
-            time.sleep(100)
-            send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
+
+    # if keyboard.is_pressed(KEY_PICKUP_ROOF):
+    #     current_poseL_d = rtde_r.getActualTCPPose()
+    #     def pick_up_roof():
+    #         rtde_c.moveL(, SPEED_L, ACCEL_J, False)
+    #         time.sleep(100)
+    #         send_gripper_cmd(gripper_serial, MAG_ON)
+    #         time.sleep(100)
+    #         tofValue = #value taken from tof sensor
+    #         tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
+    #         eps = 0.0005 #0.5 mm epsilon 
+    #         if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
+    #             try:
+    #                 tofTarget = old_z
+    #             except: 
+    #                 tofTarget = tofTarget + 0.05 
+    #             else:
+    #                 old_z = current_poseL_d[2]
+    #         tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
+    #         rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
+    #         time.sleep(100) #before moving to next position 
+
+    #         tofTargetUp = tofTarget + 0.05
+    #         moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
+    #         rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
+    #         trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
+    #         rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
+    #         time.sleep(100)
+    #         send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
 
     elif keyboard.is_pressed(KEY_QUIT): 
         print('Quit key pressed')
@@ -285,6 +290,7 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     return new_setpoint, new_speed, new_increment
 
 ## CONTROL SPEED AND POSITION 
+
 def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
@@ -292,29 +298,33 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
     #Roofs = ~34, 24.7
-   
+
+
     # Speed control loop
+    theta = 0.0 # Ange in cylindrical coordinates
+    
+    if USE_ROBOT:
+        # Get current pose and z position
+        current_poseL_d = rtde_r.getActualTCPPose()
+        offset_tim = 17.2 
+        current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
+        forces = rtde_r.getActualTCPForce()
+        print(forces[2])
+
+        theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+
+    
+    # Poll keyboard for speed direction and any speed setpoint changes
+    current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
+    #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
+    current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
+    new_setpoint, new_speed, new_increment,  = poll_keyboard()
+    
     while True:
-        theta = 0.0 # Ange in cylindrical coordinates
-        
-        if USE_ROBOT:
-            # Get current pose and z position
-            current_poseL_d = rtde_r.getActualTCPPose()
-            offset_tim = 17.2 
-            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
-
-            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
-
-        
-        # Poll keyboard for speed direction and any speed setpoint changes
-        current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
-        #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp, roofPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
-
         if current_speedL_d is None:
-            break
+        #     break
         
-         # Send home/reset
+            # Send home/reset
         if reset_home:
             reset()
 
@@ -355,7 +365,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                         target = target + 0.25 
                 else:
                     old_z_height = current_poseL_d[2]
-               
+                
                 targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
                 rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
 
@@ -399,11 +409,11 @@ def loop_pos_cntrl(rtde_c, rtde_r):
     ## POLLING LOOP
     speed = [0.0, 0.0, 0.0]
     increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational increment sizes
-    
-    
-    while True:
-        current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
 
+    current_poseL_d = rtde_r.getActualTCPPose()
+    current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
+
+    while True:
         if current_poseL_d is None:
             break
 
@@ -426,19 +436,21 @@ def loop_pos_cntrl(rtde_c, rtde_r):
         #     print("Invalid command. Please try again.")
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
-        
+            
 #move to home position (no singularity)
 def move_home(q_desired, speed, acceleration, asynchronous=False):
     rtde_c.moveJ(q_desired, speed, acceleration, asynchronous)
     return
 
- # Send a command to the ESP32 (which the gripper runs off) via serial
+# Send a command to the ESP32 (which the gripper runs off) via serial
 def send_gripper_cmd(gripper_serial, command):
     gripper_serial.write((command + '\n').encode())  # Command must end with a newline character
     time.sleep(0.1)  # Give some time for the ESP32 to respond
     while gripper_serial.in_waiting:
         print(gripper_serial.readline().decode().strip())  # Print the ESP32's response
 
+
+def pick_up_roof():
 
 def reset():
     print('RESET')
@@ -459,9 +471,9 @@ if __name__ == "__main__":
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
-    #loop_pos_cntrl(rtde_c, rtde_r)
+    # while True:
+    #     loop_pos_cntrl(rtde_c, rtde_r)
     loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r)
-
 
 
 

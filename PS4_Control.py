@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-PRINT = True
+PRINT = False
 MAPPING_LINUX = True # Harvey's controller key mappings are different to Baran's. Switch here/DO NOT JUST CHANGE THE BUTTONS BELOW
 
 CS_CYLINDRICAL = True
@@ -281,10 +281,8 @@ def get_controller_input(joystick, arm_theta):
     toggleGripper = share # Use 'share' button for gripper open/close
     sendHome = home
     zPickUp = r2
-    roofPickUp = l2
 
-
-    return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp, roofPickUp
+    return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp
 
 # Scale the state list to give actual velocities
 def scale_state_list(stateList, v_max_planar, v_max_ang):
@@ -302,11 +300,11 @@ def scale_state_list(stateList, v_max_planar, v_max_ang):
 
 # Get the scaled inputs from the controller
 def get_controller_input_scaled(joystick, v_max_planar, v_max_ang, arm_theta):
-    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp, roofPickUp = get_controller_input(joystick, arm_theta)
+    stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp = get_controller_input(joystick, arm_theta)
 
     stateList_scaled = scale_state_list(stateList[0:6], v_max_planar, v_max_ang)
 
-    return stateList_scaled, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp, roofPickUp
+    return stateList_scaled, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp
 
 
 
