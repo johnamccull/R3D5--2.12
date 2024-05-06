@@ -1,6 +1,5 @@
-# 2024-Spring-2.12
-2024 Spring 2.12 Final Project Team
-Team 3 (Thursday 3-5pm)
+# 2024-Spring-2.12 Team 3 Mobile Robot
+2024 Spring 2.12 Final Project Team 3 (Thursday 3-5pm)
 
 # Mobile Robot
 
