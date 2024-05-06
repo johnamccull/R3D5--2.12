@@ -37,4 +37,4 @@ Upload the following files to the controller:
 
 controller_main.cpp - main program execution loop on controller
 
-controller_wireless.cpp - defines wireless communication functions used by robot to send data to controller
+controller_wireless.cpp - defines wireless communication functions used by controller to send data to robot for commanding motor speeds
