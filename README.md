@@ -13,13 +13,16 @@ Ottavia Personeni,
 
 # CODE STRUCTURE
 ## UR5
-- UR_3_PS4_Control.cpp (main branch)
----> Uploaded to Onboard ESP, this allows the board to process commands from the PS4 controller to manipulate our gripper and electromagnet
+- UR_3_PS4_Control.py (main branch)
+---> This sends commands from the PS4 controller to the ESP in order to manipulate our gripper and electromagnet;
+  Accessed by M
 - UR_3_Main_Arm_Control.py (main branch)
----> Run on the computer during the competition
+---> Run on the computer during the competition and runs entire loop, reading both keyboard and controller input
+- UR_3_gripper_control.cpp (main branch)
+---> Run on ESP and translates controller commands into movements to control servos and magnet
 
 ## Mobile Robot
-(please checkout to mobile-robot branch and read respective README.md)
+(please checkout to mobile-robot branch and read respective README.m
 
 # Operators
 -Mobile Robot Driver: John McCullough  
