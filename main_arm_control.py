@@ -265,44 +265,6 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
         rtde_c.moveL(POS_E, SPEED_J, ACCEL_J, False)
     
     if keyboard.is_pressed(KEY_ROOF_F):
-<<<<<<< HEAD
-        roof_f = []
-        rtde_c.moveL(roof_f, SPEED_J, ACCEL_J, False)
-    
-    if keyboard.is_pressed(KEY_PICKUP_ROOF):
-        def ()
-        rtde_c.forceMode()
-
-
-    # if keyboard.is_pressed(KEY_PICKUP_ROOF):
-    #     current_poseL_d = rtde_r.getActualTCPPose()
-    #     def pick_up_roof():
-    #         rtde_c.moveL(, SPEED_L, ACCEL_J, False)
-    #         time.sleep(100)
-    #         send_gripper_cmd(gripper_serial, MAG_ON)
-    #         time.sleep(100)
-    #         tofValue = #value taken from tof sensor
-    #         tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
-    #         eps = 0.0005 #0.5 mm epsilon 
-    #         if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
-    #             try:
-    #                 tofTarget = old_z
-    #             except: 
-    #                 tofTarget = tofTarget + 0.05 
-    #             else:
-    #                 old_z = current_poseL_d[2]
-    #         tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
-    #         rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
-    #         time.sleep(100) #before moving to next position 
-
-    #         tofTargetUp = tofTarget + 0.05
-    #         moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
-    #         rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
-    #         trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
-    #         rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
-    #         time.sleep(100)
-    #         send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
-=======
         rtde_c.moveL(POS_F, SPEED_J, ACCEL_J, False)
 
     if keyboard.is_pressed(KEY_ROOF_G):
@@ -352,7 +314,6 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
             rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
             time.sleep(100)
             send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
->>>>>>> d99fd21ae794fd791cb289af23294c78ca1ae9d6
 
         # def pick_up_roof():
         #     send_gripper_cmd(gripper_serial, MAG_ON)
