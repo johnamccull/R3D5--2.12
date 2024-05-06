@@ -1,6 +1,21 @@
 # 2024-Spring-2.12
 2024 Spring 2.12 Final Project Team
 
+# UR5 CODE STRUCTURE
+- UR_3_PS4_Control.cpp (main branch)
+---> Uploaded to Onboard ESP, this allows the board to process commands from the PS4 controller to manipulate our gripper and electromagnet
+- UR_3_Main_Arm_Control.py (main branch)
+---> Run on the computer during the competition
+
+# Mobile Robot CODE STRUCTURE
+(please checkout to mobile-robot branch and read respective README.md)
+
+# Operators
+-Mobile Robot Driver: John McCullough
+-Skycam Operator(s): Malachi Macon, Baran Mensah
+-UR5 Operator: Harvey Merton
+-Presenters: Amir White, Avani Narula, Baran Mensah, Elysia Yuan, Ottavia Personeni
+
 
 # TODO
 ~~Electromagnet + test on roof- Amir~~  
@@ -32,15 +47,8 @@ Other drivers: Kemi, Avani, Baran
 3. Magnet doesn't engage unless perfectly parallel (don't change orientation after start pose)
 4. Difficult to see depth with camera - perhaps move backwards or have some form of depth sensor (use reflection to judge depth)
 5. test cylindrical coordinates
+6. Define some autonomous behaviors/trajectories for scanning for TIM and roof removal
 ----------------
-
-
-
-# Extra
-5. Define some autonomous behaviors/trajectories for scanning for TIM, picking up and dropping off rubble and picking up and dropping off TIM 
-(this includes actuating/deactuating gripper and electromagnet and mapping these to controller/keyboard inputs too)
-
-
 
 # Setup & Run Procedure 
 
@@ -61,8 +69,9 @@ THINGS TO REMEMBER IN OUR BOX:
 16. Computer chargers 
 17. Adapters
 18. Jumper wires
+19. Good vibes
 
-Procedure for setting up before starting the competition.
+# Procedure for setting up before starting the competition
 
 1. Move the robot to home position
 2. Mount the gripper
@@ -88,13 +97,6 @@ Procedure for setting up before starting the competition.
 7. adjust accordingly 
 8. pick up Tim with claw and toggle R2 again
 9. drop TIM over mobile robot 
-
-
-
-# Roles
-Amy and Avani's computers work with camera
--> Change timeouts on computers
-
 
 # UR Arm
 ## Installation
