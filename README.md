@@ -3,20 +3,16 @@
 
 # Mobile Robot
 
-## Robot
+## MAC Addresses
 
-Upload the following files to the robot microcontroller:
+Get MAC addresses of robot/controller s: upload get_mac.cpp to the particular microcontroller and read printout of its MAC address
 
-robot_drive.cpp
+Define MAC addresses of robot/controller as constants robotAddr and controllerAddr, respectively, in the header file: wireless.h
 
-robot_main.cpp
+## Running the robot
 
-robot_wireless.cpp
+Upload the following files to the robot: robot_drive.cpp, robot_main.cpp, robot_wireless.cpp
 
-## Controller
+## Running the controller
 
-Uploadthe following files to the controller:
-
-controller_main.cpp
-
-controller_wireless.cpp
+Uploadthe following files to the controller: controller_main.cpp, controller_wireless.cpp

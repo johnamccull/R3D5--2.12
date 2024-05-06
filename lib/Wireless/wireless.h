@@ -10,7 +10,7 @@ const uint8_t controllerAddr[] = {0xEC, 0xDA, 0x3B, 0x41, 0xA3, 0x14};
 const uint8_t robotAddr[] = {0xEC, 0xDA, 0x3B, 0x41, 0xA2, 0x40};
 
 struct ControllerMessage {
-    // commented out the pieces of the struct that are currently unused --> reuduce size of the memory chunk being copied/sent over wifi?
+    // commented out the pieces of the struct that are currently unused --> reuduce size of the memory chunk being copied/sent over wifi
     //unsigned long millis;
     JoystickReading joystick1;
     JoystickReading joystick2;
