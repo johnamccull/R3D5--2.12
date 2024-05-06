@@ -1,14 +1,22 @@
 # 2024-Spring-2.12
 2024 Spring 2.12 Final Project Team
 
+# Mobile Robot
 
+## Robot
 
-# UR Arm
-## Installation
-Install RTDE c++ library: https://sdurobotics.gitlab.io/ur_rtde/installation/installation.html#installation
+Upload the following files to the robot microcontroller:
 
-Install RTDE python client library: https://github.com/UniversalRobots/RTDE_Python_Client_Library/tree/main 
+robot_drive.cpp
 
+robot_main.cpp
 
-## Useful references
-RTDE guide: https://www.universal-robots.com/articles/ur/interface-communication/real-time-data-exchange-rtde-guide/
+robot_wireless.cpp
+
+## Controller
+
+Uploadthe following files to the controller:
+
+controller_main.cpp
+
+controller_wireless.cpp

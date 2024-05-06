@@ -18,11 +18,15 @@ Joystick joystick2(JOYSTICK2_X_PIN, JOYSTICK2_Y_PIN); // turn
 // #define A_PIN 9 // autonomous mode
 #define SLOW_FACTOR 0.2
 
+
 const int buffer_length = 8;
-double joystick1_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
-double joystick2_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+double joystick1_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+double joystick1_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+double joystick2_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+double joystick2_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+
 unsigned long iter = 0; 
-const int n = 3; // number of recent raw joystick readings to use to compute a filtered value
+const int n = 8; // number of recent raw joystick readings to use to compute a filtered value
 
 
 void setup() {
@@ -41,7 +45,7 @@ void setup() {
 void loop() {
     // Read and send controller sensors
     
-    EVERY_N_MILLIS(5) {
+    EVERY_N_MILLIS(10) {
         //controllerMessage.millis = millis();
 
         JoystickReading joystick1_reading = joystick1.read();
@@ -62,35 +66,56 @@ void loop() {
 
         // insert readings into buffers
         int index_buffer = iter % buffer_length;
-        joystick1_buffer[index_buffer] = joystick1_reading.x;
-        joystick2_buffer[index_buffer] = joystick2_reading.y;
+        joystick1_x_buffer[index_buffer] = joystick1_reading.x;
+        joystick1_y_buffer[index_buffer] = joystick1_reading.y;
+        joystick2_x_buffer[index_buffer] = joystick2_reading.x;
+        joystick2_y_buffer[index_buffer] = joystick2_reading.y;
+
+        // filter to smooth sudden joystick movements
+        // for now just moving average on the most recent n values (including current one) in the circular buffer
+        double joystick1_x_filtered = 0;
+        double joystick1_y_filtered = 0;
+        double joystick2_x_filtered = 0;
+        double joystick2_y_filtered = 0;
+        for (int i = index_buffer - (n-1); i <= index_buffer ; i++) {
+            int ind = i;
+            if (ind < 0) {
+                ind = buffer_length + i;
+            }
+            joystick1_x_filtered += joystick1_x_buffer[ind];
+            joystick1_y_filtered += joystick1_y_buffer[ind];
+            joystick2_x_filtered += joystick1_x_buffer[ind];
+            joystick2_y_filtered += joystick2_y_buffer[ind];
+        } 
+        joystick1_x_filtered /= n;
+        joystick1_y_filtered /= n;
+        joystick2_x_filtered /= n;
+        joystick2_y_filtered /= n;
+
         iter += 1;
 
-        // filter
-        // for now just moving average on the most recent n values
-        double joystick1_x_filtered = joystick1_reading.x;
-        if (index_buffer >= n-1) {
-            joystick1_x_filtered = 0;
-            for (int i = index_buffer - (n-1); i <= index_buffer ; i++) {
-                joystick1_x_filtered += joystick1_buffer[i];
-            } 
-            joystick1_x_filtered /= n;
-        }
-
-        Serial.println(digitalRead(V_PIN));        
+        //Serial.println(digitalRead(V_PIN));        
         // if low speed mode
         if (!digitalRead(V_PIN)){
             joystick1_reading.x *= SLOW_FACTOR;
-            //joystick1_x_filtered *= SLOW_FACTOR;
             joystick1_reading.y *= SLOW_FACTOR;
             joystick2_reading.x *= SLOW_FACTOR;
             joystick2_reading.y *= SLOW_FACTOR;
+
+            joystick1_x_filtered *= SLOW_FACTOR;
+            joystick1_y_filtered *= SLOW_FACTOR;
+            joystick2_x_filtered *= SLOW_FACTOR;
+            joystick2_y_filtered *= SLOW_FACTOR;
         }
+
+        joystick1_reading.x = joystick1_x_filtered;
+        joystick1_reading.y = joystick1_y_filtered;
+        joystick2_reading.x = joystick2_x_filtered;
+        joystick2_reading.y = joystick2_y_filtered;
+
 
         controllerMessage.joystick1 = joystick1_reading;
         controllerMessage.joystick2 = joystick2_reading;
-
-        
 
         if (!(prevControllerMessage == controllerMessage)) {
             sendControllerData();
