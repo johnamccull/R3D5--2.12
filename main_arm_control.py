@@ -1,6 +1,7 @@
 import time
 import PS4_Control as ps4
 import math
+import keyboard
 
 # PARAMETERS
 PRINT_SPEED = False
@@ -11,13 +12,10 @@ IP_UR5 = "169.254.157.1" #"192.168.0.88" #"169.254.157.0"
 # Components
 USE_ROBOT = True #True #True
 USE_CONTROLLER = True
-USE_GRIPPER = False #True 
+USE_GRIPPER = True #True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
-
-if not USE_CONTROLLER:
-    import keyboard 
 
 if USE_GRIPPER:
     import serial
@@ -29,30 +27,53 @@ baud_rate = 115200
 timeout = 2  # Timeout for serial communication
 
 # Keyboard control directions and commands
-KEY_XM = 'f' #'s'
-KEY_XP = 's' #'f'
-KEY_YM = 'e' #'d'
-KEY_YP = 'd' #'e'
-
-KEY_ZP = 'i'
-KEY_ZM = 'k'
-
-KEY_PITCHP = 'u'
-KEY_PITCHM = 'o'
-KEY_ROLLP = 'j'
-KEY_ROLLM = 'l'
-KEY_YAWP = 'm'
-KEY_YAWM = '.'
-
-KEY_SPEEDP = 't'
-KEY_SPEEDM = 'g'
-KEY_ANGSPEEDP = 'y'
-KEY_ANGSPEEDM = 'h'
-
 KEY_QUIT = 'q'
 
+KEY_ROOF1 = "1" #house 1 (middle)
+KEY_ROOF2 = "2" #house 2 (right)
+KEY_ROOF3 = "3" #house 3 (left)
+
+KEY_ROOF_A = "a" #house 1 orientation 1
+KEY_ROOF_B = "b"
+KEY_ROOF_C = "c" #house 1 orientation 2
+KEY_ROOF_D = "d"
+KEY_ROOF_E = "e" #house 2 orientation 1
+KEY_ROOF_F = "f"
+KEY_ROOF_G = "g" #house 2 orientation 2
+KEY_ROOF_H = "h"
+KEY_ROOF_I = "i" #house 3 orientation 1
+KEY_ROOF_J = "j"
+KEY_ROOF_K = "k" #house 3 orientation 2
+KEY_ROOF_L = "l"
+
+## Tool Position of roofs for each house for pickup
+th = 1000
+add = 0.005
+POS_A = [0.3958538304842751, 0.24978578871982376, 0.4265666168884772, 1.9883451087942299, -2.3977435469339814, 0.02286264994955303]
+POS_B = [0.4092870942274119, 0.5483542469617233, 0.5286425117253378, 1.9883692388655774, -2.3978177916856684, 0.022894572212964332]
+POS_C = [0.4030707912776921, 0.215665444427723, 0.526003723875395, 1.9883499113339607, -2.397823187159072, 0.02290414677337086]
+POS_D = [0.4101288759544432, 0.5265357593222997, 0.427156556531685, 1.9883333272460297, -2.397858800931703, 0.022896279332703894]
+POS_E = [0.2783081094708031, -0.41421618465988597, 0.42666308407224873, -0.6639307093768754, -3.0420190252667583, -0.0184182392018774]
+POS_F = [0.5717924355794337, -0.40274239600216555, 0.5274792323051698, -0.6639571879461229, -3.041925912960904, -0.018492578021733562]
+POS_G = [0.21054452841668214, -0.4331911083263245, 0.5292614231507237, -0.6640240853685172, -3.04198668923551, -0.01844375440366032]
+POS_H = [0.5090242631607035, -0.4272351123624579, 0.4237870999921936, -0.6639618900279403, -3.0420488352586936, -0.01830644974883643]
+POS_I = [-0.40905557951236143, -0.2809979625439197, 0.42713349578122217, 1.9538697848188273, -2.4156933350086414, 0.03736850358701248]
+POS_J = [-0.3543289143751489, -0.5939681337677466, 0.5294571649322793, 1.9575821072090849, -2.4201960483287888, 0.026043673931247388]
+POS_K = [-0.43194868345476406, -0.19660842623538524, 0.5275326549104137, 1.9884084854752329, -2.3978243461975137, 0.022944633757596065]
+POS_L = [-0.4266824187990573, -0.5165109943271625, 0.42725743040494474, 1.9538771314063674, -2.415675978403866, 0.0373408386426631]
+# Positions of each house for heating
+POS_1 = [0.4359194818885224, 0.36427965567375403, 0.533283094482392, -0.6639689819910086, -3.0420612002505196, -0.0183648934540018]
+POS_2 = [0.40592256671743415, -0.4132648902196437, 0.554846955641282, -2.812422348609393, -1.380806605309295, -0.04573916793366082]
+POS_3 = [-0.4212487453556083, -0.3790010411135084, 0.5311406155165554, 1.9883662349156, -2.3977572483191896, 0.022869172731757304]
+
+
+key_roofs = {'a':POS_A,'b':POS_B, 'c':POS_C, 'd':POS_D, 'e':POS_E, 'f':POS_F, 'g':POS_G, 
+                  'h':POS_H, 'i': POS_I, 'j':POS_J,'k': POS_K, 'l':POS_L} #maps keys to positions of roofs to lift and throw them away
+
+key_houses = {'1': POS_1, '2':POS_2, '3':POS_3} #maps keys to positions of houses to IR Sense
+
 CLAW_OPEN = "v" # 'share' toggles gripper
-CLAW_CLOSE = "c"
+CLAW_CLOSE = "x"
 MAG_ON = "m" # 'options' toggles EM
 MAG_OFF = "n"
 
@@ -147,100 +168,50 @@ def alter_setpoint_vel(speed, increment, ind, use_speed_control, delta_setpoint_
 
 
 # Poll the keyboard and return changes to the desired setpoints
-def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
-    new_setpoint = original_setpoint # Note this doesn't copy yet, only creates an alias
-    new_speed = speed
-    new_increment = increment
+def poll_keyboard():
     
-    if keyboard.is_pressed(KEY_XM):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
-
-    elif keyboard.is_pressed(KEY_XP):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
-
-    if keyboard.is_pressed(KEY_YP):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
-
-    elif keyboard.is_pressed(KEY_YM):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
-
-    if keyboard.is_pressed(KEY_ZP):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
-
-    elif keyboard.is_pressed(KEY_ZM):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
-
-    if keyboard.is_pressed(KEY_PITCHP):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
-
-    elif keyboard.is_pressed(KEY_PITCHM):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
-
-    if keyboard.is_pressed(KEY_ROLLP):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
-
-    elif keyboard.is_pressed(KEY_ROLLM):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
-
-    if keyboard.is_pressed(KEY_YAWP):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
-
-    elif keyboard.is_pressed(KEY_YAWM):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
-
-    if keyboard.is_pressed(KEY_SPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-        
-    elif keyboard.is_pressed(KEY_SPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-
-    if keyboard.is_pressed(KEY_ANGSPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
+    # key = keyboard.read_key()
+    for key in key_houses:
+        if keyboard.is_pressed(key):
+            moveToRoof(key_houses[key])
     
-    elif keyboard.is_pressed(KEY_ANGSPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
-    
-    if keyboard.is_pressed(KEY_QUIT): 
-        print('Quit key pressed')
-        new_setpoint = None  # finishing the loop
+    for key in key_roofs: 
+        if keyboard.is_pressed(key):
+            roofTrash(key_roofs[key])
 
-    return new_setpoint, new_speed, new_increment
+    return 
 
 ## CONTROL SPEED AND POSITION 
+
 def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
-    z_down = False #False = up, True = down 
-    #Roofs = ~34, 24.7
-   
+
+    while True: 
     # Speed control loop
-    while True:
         theta = 0.0 # Ange in cylindrical coordinates
-        
+
         if USE_ROBOT:
             # Get current pose and z position
             current_poseL_d = rtde_r.getActualTCPPose()
             offset_tim = 17.2 
             current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
-            theta = math.atan2(current_poseL_d[0], current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
-        
+            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
-        #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
         current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
 
-        if current_speedL_d is None:
-            break
+        if not all(current_speedL_d):
+            poll_keyboard()
         
-         # Send home/reset
+            # Send home/reset
         if reset_home:
-            reset()
+           reset()
 
         # Adjust angular speed
         if speedButtons[0] == 1:
@@ -252,11 +223,6 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
 
         # Send speed command (or stop) to robot, and other commands
         if USE_ROBOT:
-            # Get current pose and z position
-            # current_poseL_d = rtde_r.getActualTCPPose()
-            # offset_tim = 17.2 
-            # current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
-            
             # Decelerate faster when stopping
             if all(v == 0 for v in current_speedL_d):
                 rtde_c.speedStop(ACCEL_L_STOP)
@@ -284,25 +250,10 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                         target = target + 0.25 
                 else:
                     old_z_height = current_poseL_d[2]
-               
-                targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
-                rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-        if zPickUp:
-                # single axis target
-                target = offset_tim / 100 # Target Height
-                eps = 0.005 # 5 mm epsilon 
                 
-                if (current_poseL_d[2] <= target + eps) and (current_poseL_d[2] >= target - eps):
-                    try:
-                        target = old_z_height
-                    except: 
-                        target = target + 0.25 
-                else:
-                    old_z_height = current_poseL_d[2]
-               
                 targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
                 rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-        
+            
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
             # Toggle gripper 
@@ -343,11 +294,11 @@ def loop_pos_cntrl(rtde_c, rtde_r):
     ## POLLING LOOP
     speed = [0.0, 0.0, 0.0]
     increment_pos = [0.01, 0.01, 0.01] # plane, vertical, rotational increment sizes
-    
-    
-    while True:
-        current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
 
+    current_poseL_d = rtde_r.getActualTCPPose()
+    current_poseL_d, speed, increment_pos = poll_keyboard(current_poseL_d, False, speed, increment_pos)
+
+    while True:
         if current_poseL_d is None:
             break
 
@@ -370,13 +321,13 @@ def loop_pos_cntrl(rtde_c, rtde_r):
         #     print("Invalid command. Please try again.")
 
         time.sleep(LOOP_SLEEP_TIME) # Run at X Hz
-        
+            
 #move to home position (no singularity)
 def move_home(q_desired, speed, acceleration, asynchronous=False):
     rtde_c.moveJ(q_desired, speed, acceleration, asynchronous)
     return
 
- # Send a command to the ESP32 (which the gripper runs off) via serial
+# Send a command to the ESP32 (which the gripper runs off) via serial
 def send_gripper_cmd(gripper_serial, command):
     gripper_serial.write((command + '\n').encode())  # Command must end with a newline character
     time.sleep(0.1)  # Give some time for the ESP32 to respond
@@ -384,6 +335,24 @@ def send_gripper_cmd(gripper_serial, command):
         print(gripper_serial.readline().decode().strip())  # Print the ESP32's response
 
 
+def roofTrash(position):
+    rtde_c.moveL(position, SPEED_L, ACCEL_L, False)
+    time.sleep(1)
+    current_poseL_d = rtde_r.getActualTCPPose()
+    send_gripper_cmd(gripper_serial, MAG_ON)
+    time.sleep(1)
+    z_move = position[2] + 0.12
+    tofTargetPickUp = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
+    rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
+    time.sleep(1) #before moving to next position
+    # trashPos = [-0.3212384054551387, 0.3778070867813049, 0.676713272187646, -0.006513678852313608, -3.1347676475344275, 0.0008835774462710534] #trash pos, out of the way of everything
+    # rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #move to trash position
+    # time.sleep(1)
+    # send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
+
+def moveToRoof(position): 
+    rtde_c.moveL(position, SPEED_L, ACCEL_L, False)
+    
 def reset():
     print('RESET')
 
@@ -403,9 +372,9 @@ if __name__ == "__main__":
 
     # LOOP
     print('About to enter manual control loop. Press q to quit.')
-    #loop_pos_cntrl(rtde_c, rtde_r)
+    # while True:
+    #     loop_pos_cntrl(rtde_c, rtde_r)
     loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r)
-
 
 
 

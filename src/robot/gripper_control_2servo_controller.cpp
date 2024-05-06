@@ -1,4 +1,6 @@
 #include <ESP32Servo.h>
+#include <Arduino.h>
+#include "Adafruit_VL53L0X.h"
 #include <UMS3.h>
 #include "util.h"
 #include "pinout.h"
@@ -30,6 +32,7 @@
 #include <Adafruit_AMG88xx.h>
 #define TCAADDR 0x70
 Adafruit_AMG88xx amg;
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
@@ -43,7 +46,6 @@ void turnOnMagnet (bool on);
 
 void irSetup();
 void irRead();
-void tcaselect(uint8_t i);
 bool see_hot; // = false;
 //float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 //float threshold = 30;
@@ -72,7 +74,6 @@ void setup() {
 
     // Setup IR sensor
     irSetup();
-
     delay(100); // let sensors boot up
 
     Serial.println("Gripper setup complete");
@@ -148,7 +149,6 @@ void irSetup() {
     // delay(100); // let sensor boot up
 }
 
-
 void irRead() {   
     //read all the pixels
     see_hot = false;
@@ -181,13 +181,4 @@ void irRead() {
     if(see_hot) Serial.println("I SEE SOMETHING HOT");
     //delay a second
     //delay(1000);   
-}
-
-
-void tcaselect(uint8_t i) {
-  if (i > 7) return;
- 
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();  
 }
