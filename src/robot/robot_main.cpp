@@ -7,14 +7,18 @@
 
 extern RobotMessage robotMessage;
 extern ControllerMessage controllerMessage;
+int cnt;
+
 
 void setup() {
     Serial.begin(115200);
     setupDrive();
     setupWireless();
+    cnt = 0;
 }
 
 void loop() {
+    //int cnt;
     EVERY_N_MILLIS(20) {
         if (freshWirelessData) {
 
@@ -29,7 +33,15 @@ void loop() {
 
             updateSetpoints(left, right);
             updateControlEffort();
-            
+            cnt = 0;
+        }
+        else{
+            cnt = cnt + 1;
         }
     }  
+    if (cnt > 10){
+        updateSetpoints(0, 0);
+        updateControlEffort();
+
+    }
 }

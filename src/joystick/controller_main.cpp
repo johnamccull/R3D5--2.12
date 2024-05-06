@@ -9,7 +9,7 @@
 
 ControllerMessage prevControllerMessage;
 
-double JOYSTICK_DEADZONE = 0.06;
+double JOYSTICK_DEADZONE = 0.075;
 
 Joystick joystick1(JOYSTICK1_X_PIN, JOYSTICK1_Y_PIN); // forward/backward
 Joystick joystick2(JOYSTICK2_X_PIN, JOYSTICK2_Y_PIN); // turn
@@ -20,14 +20,14 @@ Joystick joystick2(JOYSTICK2_X_PIN, JOYSTICK2_Y_PIN); // turn
 #define SLOW_FACTOR 0.2
 
 
-const int buffer_length = 8;
-double joystick1_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
-double joystick1_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
-double joystick2_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
-double joystick2_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0};
+const int buffer_length = 15;
+double joystick1_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+double joystick1_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+double joystick2_x_buffer[buffer_length] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+double joystick2_y_buffer[buffer_length] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 unsigned long iter = 0; 
-const int n = 8; // number of recent raw joystick readings to use to compute a filtered value
+const int n = 15; // number of recent raw joystick readings to use to compute a filtered value
 
 
 void setup() {
@@ -84,7 +84,7 @@ void loop() {
             }
             joystick1_x_filtered += joystick1_x_buffer[ind];
             joystick1_y_filtered += joystick1_y_buffer[ind];
-            joystick2_x_filtered += joystick1_x_buffer[ind];
+            joystick2_x_filtered += joystick2_x_buffer[ind];
             joystick2_y_filtered += joystick2_y_buffer[ind];
         } 
         joystick1_x_filtered /= n;
