@@ -23,8 +23,18 @@ Define MAC addresses of robot/controller as constants robotAddr and controllerAd
 
 Set maximum speeds for forward/backward drive and turning by defining MAX_FORWARD and MAX_TURN, respectively, in the header file: robot_drive.h
 
-Upload the following files to the robot: robot_drive.cpp, robot_main.cpp, robot_wireless.cpp
+Upload the following files to the robot: 
+
+robot_drive.cpp - defines robot driving function given speed commands
+
+robot_main.cpp - main program execution loop on robot
+
+robot_wireless.cpp - defines wireless communication functions used by robot to receive data from controller
 
 ## Running the controller
 
-Uploadthe following files to the controller: controller_main.cpp, controller_wireless.cpp
+Upload the following files to the controller: 
+
+controller_main.cpp - main program execution loop on controller
+
+controller_wireless.cpp - defines wireless communication functions used by robot to send data to controller
