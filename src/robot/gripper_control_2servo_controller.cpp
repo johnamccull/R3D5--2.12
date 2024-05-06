@@ -21,7 +21,7 @@
 #define PRINT_TEMPS 0
 
 #define CLAW_OPEN "v"
-#define CLAW_CLOSE "c"
+#define CLAW_CLOSE "x"
 #define MAG_ON "m"
 #define MAG_OFF "n"
 

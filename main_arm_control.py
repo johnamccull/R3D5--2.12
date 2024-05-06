@@ -7,12 +7,12 @@ import keyboard
 PRINT_SPEED = False
 
 # Robot IP address
-IP_UR5 = "169.254.157.1" #"192.168.0.88" #"169.254.157.0"
+IP_UR5 = "169.254.157.0" #"169.254.157.0"
 
 # Components
-USE_ROBOT = True #True #True
+USE_ROBOT = True
 USE_CONTROLLER = True
-USE_GRIPPER = True #True 
+USE_GRIPPER = True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -184,6 +184,46 @@ def poll_keyboard():
 ## CONTROL SPEED AND POSITION 
 
 def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     # Tracking variables
     speed = [SPEED_L, SPEED_L, SPEED_ANG] # plane, vertical, rotational
     increment = [0.0, 0.0, 0.0]
@@ -200,7 +240,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
             offset_tim = 17.2 
             current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
-            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates
 
         # Poll keyboard for speed direction and any speed setpoint changes
         current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
