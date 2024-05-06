@@ -21,7 +21,7 @@ void setup() {
 void loop() {
     // Read and print controller sensors
     EVERY_N_MILLIS(PRINT_DELAY) {
-        controllerMessage.millis = millis();
+        //controllerMessage.millis = millis();
         controllerMessage.joystick1 = joystick1.read(true);
     }
 }

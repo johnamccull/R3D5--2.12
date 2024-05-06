@@ -2,20 +2,21 @@
 #include "wireless.h"
 #include "util.h"
 #include "joystick.h"
-#include "dpad.h"
-#include "display.h"
 #include "controller_pinout.h"
 #include <Arduino.h>
 #include <esp_now.h>
 #include <WiFi.h>
 
 ControllerMessage prevControllerMessage;
+
 double JOYSTICK_DEADZONE = 0.06;
 
 Joystick joystick1(JOYSTICK1_X_PIN, JOYSTICK1_Y_PIN); // forward/backward
 Joystick joystick2(JOYSTICK2_X_PIN, JOYSTICK2_Y_PIN); // turn
-#define V_PIN 8// speed mode
+
+#define V_PIN 8 // speed mode switch pin 
 // #define A_PIN 9 // autonomous mode
+
 #define SLOW_FACTOR 0.2
 
 
@@ -43,7 +44,6 @@ void setup() {
 }
 
 void loop() {
-    // Read and send controller sensors
     
     EVERY_N_MILLIS(10) {
         //controllerMessage.millis = millis();
@@ -72,7 +72,7 @@ void loop() {
         joystick2_y_buffer[index_buffer] = joystick2_reading.y;
 
         // filter to smooth sudden joystick movements
-        // for now just moving average on the most recent n values (including current one) in the circular buffer
+        // moving average of the most recent n values (including current one) in the circular buffer
         double joystick1_x_filtered = 0;
         double joystick1_y_filtered = 0;
         double joystick2_x_filtered = 0;
@@ -97,11 +97,6 @@ void loop() {
         //Serial.println(digitalRead(V_PIN));        
         // if low speed mode
         if (!digitalRead(V_PIN)){
-            joystick1_reading.x *= SLOW_FACTOR;
-            joystick1_reading.y *= SLOW_FACTOR;
-            joystick2_reading.x *= SLOW_FACTOR;
-            joystick2_reading.y *= SLOW_FACTOR;
-
             joystick1_x_filtered *= SLOW_FACTOR;
             joystick1_y_filtered *= SLOW_FACTOR;
             joystick2_x_filtered *= SLOW_FACTOR;
@@ -112,7 +107,6 @@ void loop() {
         joystick1_reading.y = joystick1_y_filtered;
         joystick2_reading.x = joystick2_x_filtered;
         joystick2_reading.y = joystick2_y_filtered;
-
 
         controllerMessage.joystick1 = joystick1_reading;
         controllerMessage.joystick2 = joystick2_reading;
