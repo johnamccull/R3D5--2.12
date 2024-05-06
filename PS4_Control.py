@@ -281,6 +281,7 @@ def get_controller_input(joystick, arm_theta):
     toggleGripper = share # Use 'share' button for gripper open/close
     sendHome = home
     zPickUp = r2
+    # roofPickUp = l2 
 
     return stateList, speedButtons, toggleGripper, toggleMagnet, sendHome, zPickUp
 

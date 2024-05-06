@@ -14,11 +14,11 @@ Automatic Rubble dropoff
 Speed control for precise movement (mobile and UR5)
 Practice runs !!
 
-2. add time of flight sensor (since depth is hard to see). This should help with protective stop when there’s too much force 
+~~2. add time of flight sensor (since depth is hard to see). This should help with protective stop when there’s too much force~~
 4. closed loop potentially with time of flight to be able to take the roof off - automate it
 
 
-Other drivers: Avani, Baran, Kemi
+Other drivers: Kemi, Avani, Baran
 
 # Done
 1. prevent going into singularity, OR: if robot is in singularity, get out!!!!!
@@ -42,7 +42,26 @@ Other drivers: Avani, Baran, Kemi
 
 
 
-# Setup Procedure 
+# Setup & Run Procedure 
+
+THINGS TO REMEMBER IN OUR BOX:
+1. Data transfer cords 
+2. M4 screws and hex key
+3. UR5 screws and hex key
+6. Mini screwdriver (for power terminals)
+7. Wire strippers 
+8. Power source (for magnet)
+9. Battery & its charger 
+10. Many zipties (will have to daisy chain the ones we have from lab)
+11. Mount 
+12. Gripper 
+13. Tape & velcro 
+14. Controller 
+15. Ethernet adapter 
+16. Computer chargers 
+17. Adapters
+18. Jumper wires
+
 Procedure for setting up before starting the competition.
 
 1. Move the robot to home position
@@ -54,7 +73,22 @@ Procedure for setting up before starting the competition.
 6. Start the python file
 7. Open and close grippers to make sure ROM is correct
 8. Turn magnet on and off
-8. 
+
+1. From Home Position, press 3 which will go to house 3 first 
+2. detect IR 
+    2a. if no IR:
+        3a. go to house 2 
+        3b. detect IR 
+    4a. if no IR:
+        5a. go to house 1
+3. get someone to tell the driver of the orienation of the house and which letter to press 
+4. always grab the taller roof first 
+5. grab the shorter roof 
+6. go down over TIM with toggle R2
+7. adjust accordingly 
+8. pick up Tim with claw and toggle R2 again
+9. drop TIM over mobile robot 
+
 
 
 # Roles

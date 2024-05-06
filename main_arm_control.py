@@ -12,7 +12,7 @@ IP_UR5 = "169.254.157.1" #"192.168.0.88" #"169.254.157.0"
 # Components
 USE_ROBOT = True #True #True
 USE_CONTROLLER = True
-USE_GRIPPER = False #True 
+USE_GRIPPER = True #True 
 
 if USE_ROBOT:
     import rtde_control, rtde_receive
@@ -27,26 +27,6 @@ baud_rate = 115200
 timeout = 2  # Timeout for serial communication
 
 # Keyboard control directions and commands
-# KEY_XM = 'f' #'s'
-# KEY_XP = 's' #'f'
-# KEY_YM = 'e' #'d'
-# KEY_YP = 'd' #'e'
-
-# KEY_ZP = 'i'
-# KEY_ZM = 'k'
-
-# KEY_PITCHP = 'u'
-# KEY_PITCHM = 'o'
-# KEY_ROLLP = 'j'
-# KEY_ROLLM = 'l'
-# KEY_YAWP = 'm'
-# KEY_YAWM = '.'
-
-# KEY_SPEEDP = 't'
-# KEY_SPEEDM = 'g'
-# KEY_ANGSPEEDP = 'y'
-# KEY_ANGSPEEDM = 'h'
-
 KEY_QUIT = 'q'
 
 KEY_ROOF1 = "1" #house 1 (middle)
@@ -66,28 +46,31 @@ KEY_ROOF_J = "j"
 KEY_ROOF_K = "k" #house 3 orientation 2
 KEY_ROOF_L = "l"
 
-KEY_PICKUP_ROOF = "0" #go to roof and pickup 
-
 ## Tool Position of roofs for each house for pickup
 th = 1000
 add = 0.005
-POS_A = [451/th, 329.5/th, 26/th + add, 3.134, 0.187, 0.061]
-POS_B = [417.6/th, 585.2/th, 128/th + add, 2.827, 1.388, 0.046]
-POS_C = [406.85/th, 205.4/th, 128.2/th + add, 0.884, 3.036, 0.011]
-POS_D = [406.03/th, 458.5/th, 27.39/th + add, 0.074, -3.117, -0.015]
-POS_E = [352.2/th, -445.3/th, 26/th + add, 3.040, -0.736, 0.060]
-POS_F = [622.5/th, -387.8/th, 129.7/th + add, 3.11, -0.292, 0.094]
-POS_G = [219.8/th, -469.1/th, 128.5/th + add, 2.559, -1.757, 0.042]
-POS_H = [485.3/th, -395.3/th, 27.9/th + add, 2.899, -1.045, 0.057]
-POS_I = [-297.4/th, 485.3/th, 24.6/th + add, 2.351, 2.109, 0.041]
-POS_J = [-528.5/th, 371.9/th, 124.3/th + add, 0.434, 3.17, 0.003]
-POS_K = [-293.6/th, 471.1/th, 126.1/th + add, 2.612, 1.779, 0.068]
-POS_L = [-503.4/th, 424.7/th, 24.5/th + add, 2.489, 1.962, 0.029]
+POS_A = [0.3958538304842751, 0.24978578871982376, 0.4265666168884772, 1.9883451087942299, -2.3977435469339814, 0.02286264994955303]
+POS_B = [0.4092870942274119, 0.5483542469617233, 0.5286425117253378, 1.9883692388655774, -2.3978177916856684, 0.022894572212964332]
+POS_C = [0.4030707912776921, 0.215665444427723, 0.526003723875395, 1.9883499113339607, -2.397823187159072, 0.02290414677337086]
+POS_D = [0.4101288759544432, 0.5265357593222997, 0.427156556531685, 1.9883333272460297, -2.397858800931703, 0.022896279332703894]
+POS_E = [0.2783081094708031, -0.41421618465988597, 0.42666308407224873, -0.6639307093768754, -3.0420190252667583, -0.0184182392018774]
+POS_F = [0.5717924355794337, -0.40274239600216555, 0.5274792323051698, -0.6639571879461229, -3.041925912960904, -0.018492578021733562]
+POS_G = [0.21054452841668214, -0.4331911083263245, 0.5292614231507237, -0.6640240853685172, -3.04198668923551, -0.01844375440366032]
+POS_H = [0.5090242631607035, -0.4272351123624579, 0.4237870999921936, -0.6639618900279403, -3.0420488352586936, -0.01830644974883643]
+POS_I = [-0.40905557951236143, -0.2809979625439197, 0.42713349578122217, 1.9538697848188273, -2.4156933350086414, 0.03736850358701248]
+POS_J = [-0.3543289143751489, -0.5939681337677466, 0.5294571649322793, 1.9575821072090849, -2.4201960483287888, 0.026043673931247388]
+POS_K = [-0.43194868345476406, -0.19660842623538524, 0.5275326549104137, 1.9884084854752329, -2.3978243461975137, 0.022944633757596065]
+POS_L = [-0.4266824187990573, -0.5165109943271625, 0.42725743040494474, 1.9538771314063674, -2.415675978403866, 0.0373408386426631]
 # Positions of each house for heating
-POS_1 = [465.8/th, 457.34/th, 196.9/th, 2.968, 1.106, 0.045]
-POS_2 = [410.6/th, -458.1/th, 134.3/th, 2.594, -1.885, 0.011]
-POS_3 = [-381.7/th, 452.5/th, 142.2/th, 1.085, 3.023, -0.202]
+POS_1 = [0.4359194818885224, 0.36427965567375403, 0.533283094482392, -0.6639689819910086, -3.0420612002505196, -0.0183648934540018]
+POS_2 = [0.40592256671743415, -0.4132648902196437, 0.554846955641282, -2.812422348609393, -1.380806605309295, -0.04573916793366082]
+POS_3 = [-0.4212487453556083, -0.3790010411135084, 0.5311406155165554, 1.9883662349156, -2.3977572483191896, 0.022869172731757304]
 
+
+key_roofs = {'a':POS_A,'b':POS_B, 'c':POS_C, 'd':POS_D, 'e':POS_E, 'f':POS_F, 'g':POS_G, 
+                  'h':POS_H, 'i': POS_I, 'j':POS_J,'k': POS_K, 'l':POS_L} #maps keys to positions of roofs to lift and throw them away
+
+key_houses = {'1': POS_1, '2':POS_2, '3':POS_3} #maps keys to positions of houses to IR Sense
 
 CLAW_OPEN = "v" # 'share' toggles gripper
 CLAW_CLOSE = "x"
@@ -185,205 +168,18 @@ def alter_setpoint_vel(speed, increment, ind, use_speed_control, delta_setpoint_
 
 
 # Poll the keyboard and return changes to the desired setpoints
-def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
-    new_setpoint = original_setpoint # Note this doesn't copy yet, only creates an alias
-    new_speed = speed
-    new_increment = increment
+def poll_keyboard():
     
-    # if keyboard.is_pressed(KEY_XM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
-
-    # elif keyboard.is_pressed(KEY_XP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
-
-    # if keyboard.is_pressed(KEY_YP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
-
-    # elif keyboard.is_pressed(KEY_YM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
-
-    # if keyboard.is_pressed(KEY_ZP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
-
-    # elif keyboard.is_pressed(KEY_ZM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
-
-    # if keyboard.is_pressed(KEY_PITCHP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
-
-    # elif keyboard.is_pressed(KEY_PITCHM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
-
-    # if keyboard.is_pressed(KEY_ROLLP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
-
-    # elif keyboard.is_pressed(KEY_ROLLM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
-
-    # if keyboard.is_pressed(KEY_YAWP):
-    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
-
-    # elif keyboard.is_pressed(KEY_YAWM):
-    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
-
-    # if keyboard.is_pressed(KEY_SPEEDP):
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-        
-    # elif keyboard.is_pressed(KEY_SPEEDM):
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-
-    # if keyboard.is_pressed(KEY_ANGSPEEDP):
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
+    # key = keyboard.read_key()
+    for key in key_houses:
+        if keyboard.is_pressed(key):
+            moveToRoof(key_houses[key])
     
-    # elif keyboard.is_pressed(KEY_ANGSPEEDM):
-    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
-    
-    if keyboard.is_pressed(KEY_ROOF1):
-        rtde_c.moveL(POS_1, SPEED_J, ACCEL_J, False)
+    for key in key_roofs: 
+        if keyboard.is_pressed(key):
+            roofTrash(key_roofs[key])
 
-    elif keyboard.is_pressed(KEY_ROOF2):
-        rtde_c.moveL(POS_2, SPEED_J, ACCEL_J, False)
-    
-    if keyboard.is_pressed(KEY_ROOF3):
-        rtde_c.moveL(POS_3, SPEED_J, ACCEL_J, False)
-
-    elif keyboard.is_pressed(KEY_ROOF_A):
-        rtde_c.moveL(POS_A, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_B):
-        rtde_c.moveL(POS_B, SPEED_J, ACCEL_J, False)
-    
-    elif keyboard.is_pressed(KEY_ROOF_C):
-        rtde_c.moveL(POS_C, SPEED_J, ACCEL_J, False)
-    
-    if keyboard.is_pressed(KEY_ROOF_D):
-        rtde_c.moveL(POS_D, SPEED_J, ACCEL_J, False)
-
-    elif keyboard.is_pressed(KEY_ROOF_E):
-        rtde_c.moveL(POS_E, SPEED_J, ACCEL_J, False)
-    
-    if keyboard.is_pressed(KEY_ROOF_F):
-<<<<<<< HEAD
-        roof_f = []
-        rtde_c.moveL(roof_f, SPEED_J, ACCEL_J, False)
-    
-    if keyboard.is_pressed(KEY_PICKUP_ROOF):
-        def ()
-        rtde_c.forceMode()
-
-
-    # if keyboard.is_pressed(KEY_PICKUP_ROOF):
-    #     current_poseL_d = rtde_r.getActualTCPPose()
-    #     def pick_up_roof():
-    #         rtde_c.moveL(, SPEED_L, ACCEL_J, False)
-    #         time.sleep(100)
-    #         send_gripper_cmd(gripper_serial, MAG_ON)
-    #         time.sleep(100)
-    #         tofValue = #value taken from tof sensor
-    #         tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
-    #         eps = 0.0005 #0.5 mm epsilon 
-    #         if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
-    #             try:
-    #                 tofTarget = old_z
-    #             except: 
-    #                 tofTarget = tofTarget + 0.05 
-    #             else:
-    #                 old_z = current_poseL_d[2]
-    #         tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
-    #         rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
-    #         time.sleep(100) #before moving to next position 
-
-    #         tofTargetUp = tofTarget + 0.05
-    #         moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
-    #         rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
-    #         trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
-    #         rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
-    #         time.sleep(100)
-    #         send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
-=======
-        rtde_c.moveL(POS_F, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_G):
-        rtde_c.moveL(POS_G, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_H):
-        rtde_c.moveL(POS_H, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_I):
-        rtde_c.moveL(POS_I, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_J):
-        rtde_c.moveL(POS_J, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_K):
-        rtde_c.moveL(POS_K, SPEED_J, ACCEL_J, False)
-
-    if keyboard.is_pressed(KEY_ROOF_L):
-        rtde_c.moveL(POS_L, SPEED_J, ACCEL_J, False)
-    
-
-    if keyboard.is_pressed(KEY_PICKUP_ROOF):
-        current_poseL_d = rtde_r.getActualTCPPose()
-        def pick_up_roof():
-            send_gripper_cmd(gripper_serial, MAG_ON)
-            time.sleep(100)
-            eps = 0.0005 #0.5 mm epsilon
-            force_target = 10 #amount of force to push down on the roof with
-            forces = rtde_r.actual_TCP_force()
-            z_force = forces[2]
-            if (z_force <= force_target + eps) and (z_force >= force_target - eps):
-                 try:
-                     z_move = old_z
-                 except: 
-                     z_move = z_move + 0.05 
-                 else:
-                     old_z = current_poseL_d[2]
-
-            tofTargetPickUp = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
-            rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
-            time.sleep(100) #before moving to next position 
-
-            z_move = z_move + 0.05
-            moveUpPosition = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
-            rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
-            trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
-            rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
-            time.sleep(100)
-            send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
->>>>>>> d99fd21ae794fd791cb289af23294c78ca1ae9d6
-
-        # def pick_up_roof():
-        #     send_gripper_cmd(gripper_serial, MAG_ON)
-        #     time.sleep(100)
-        #     tofValue = #value taken from tof sensor
-        #     tofTarget = 0.015 #15 mm from ToF to base of magnet (measure exact value with calipers soon)
-        #     eps = 0.0005 #0.5 mm epsilon 
-        #     if (tofValue <= tofTarget + eps) and (tofValue >= tofTarget - eps):
-        #         try:
-        #             tofTarget = old_z
-        #         except: 
-        #             tofTarget = tofTarget + 0.05 
-        #         else:
-        #             old_z = current_poseL_d[2]
-        #     tofTargetPickUp = [c if i!= 2 else tofTarget for i,c in enumerate(current_poseL_d)]
-        #     rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
-        #     time.sleep(100) #before moving to next position 
-
-        #     tofTargetUp = tofTarget + 0.05
-        #     moveUpPosition = [c if i!= 2 else tofTargetUp for i,c in enumerate(current_poseL_d)]
-        #     rtde_c.moveL(moveUpPosition, SPEED_L, ACCEL_L, False) #move up 
-        #     trashPos = [-0.3911, 0.2967, 0.6767, -0.0065, -3.1348, 0.0010] #trash pos, out of the way of everything
-        #     rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #moce to trash position
-        #     time.sleep(100)
-        #     send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
-
-    elif keyboard.is_pressed(KEY_QUIT): 
-        print('Quit key pressed')
-        new_setpoint = None  # finishing the loop
-
-    return new_setpoint, new_speed, new_increment
+    return 
 
 ## CONTROL SPEED AND POSITION 
 
@@ -393,36 +189,29 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
     increment = [0.0, 0.0, 0.0]
     gripper_open = False # False = closed, True = open
     magnet_on = False # False = off, True = on
-    #Roofs = ~34, 24.7
 
-
+    while True: 
     # Speed control loop
-    theta = 0.0 # Ange in cylindrical coordinates
-    
-    if USE_ROBOT:
-        # Get current pose and z position
-        current_poseL_d = rtde_r.getActualTCPPose()
-        offset_tim = 17.2 
-        current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
-        forces = rtde_r.getActualTCPForce()
-        print(forces[2])
+        theta = 0.0 # Ange in cylindrical coordinates
 
-        theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+        if USE_ROBOT:
+            # Get current pose and z position
+            current_poseL_d = rtde_r.getActualTCPPose()
+            offset_tim = 17.2 
+            current_z_cm = round(current_poseL_d[2]*100,1) - offset_tim # z position for TIM, 0 = good position for picking up
 
-    
-    # Poll keyboard for speed direction and any speed setpoint changes
-    current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
-    #current_speedL_d, speed, increment = poll_keyboard(current_speedL_d, True, speed, increment)
-    current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
-    new_setpoint, new_speed, new_increment,  = poll_keyboard()
-    
-    while True:
-        if current_speedL_d is None:
-        #     break
+            theta = math.atan2(current_poseL_d[0], -current_poseL_d[1]) #current_poseL_d[1], current_poseL_d[0]) # Angle in cylindrical coordinates TODO: TESTTTTTTTT
+
+        # Poll keyboard for speed direction and any speed setpoint changes
+        current_speedL_d = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #TODO: speedStop(double a = 10.0)?? Stop arm overshooting, stopJ, stopL(double a = 10.0, bool asynchronous = false)
+        current_speedL_d, speedButtons, toggle_gripper, toggle_magnet, reset_home, zPickUp = ps4.get_controller_input_scaled(joystick, SPEED_L_MAX, speed[2], theta) #SPEED_ANG_MAX
+
+        if not all(current_speedL_d):
+            poll_keyboard()
         
             # Send home/reset
         if reset_home:
-            reset()
+           reset()
 
         # Adjust angular speed
         if speedButtons[0] == 1:
@@ -464,7 +253,7 @@ def loop_speed_cntrl(rtde_c, joystick, gripper_serial, rtde_r):
                 
                 targetPickUp = [c if i!= 2 else target for i,c in enumerate(current_poseL_d)]
                 rtde_c.moveL(targetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above Tim
-
+            
         # Send open/close or electromagnet on/off command to gripper
         if USE_GRIPPER:
             # Toggle gripper 
@@ -546,8 +335,24 @@ def send_gripper_cmd(gripper_serial, command):
         print(gripper_serial.readline().decode().strip())  # Print the ESP32's response
 
 
-def pick_up_roof():
+def roofTrash(position):
+    rtde_c.moveL(position, SPEED_L, ACCEL_L, False)
+    time.sleep(1)
+    current_poseL_d = rtde_r.getActualTCPPose()
+    send_gripper_cmd(gripper_serial, MAG_ON)
+    time.sleep(1)
+    z_move = position[2] + 0.12
+    tofTargetPickUp = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
+    rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
+    time.sleep(1) #before moving to next position
+    # trashPos = [-0.3212384054551387, 0.3778070867813049, 0.676713272187646, -0.006513678852313608, -3.1347676475344275, 0.0008835774462710534] #trash pos, out of the way of everything
+    # rtde_c.moveL(trashPos,SPEED_L, ACCEL_L, False) #move to trash position
+    # time.sleep(1)
+    # send_gripper_cmd(gripper_serial, MAG_OFF) #turn off magnet 
 
+def moveToRoof(position): 
+    rtde_c.moveL(position, SPEED_L, ACCEL_L, False)
+    
 def reset():
     print('RESET')
 
