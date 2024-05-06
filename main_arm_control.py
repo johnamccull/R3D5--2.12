@@ -27,25 +27,25 @@ baud_rate = 115200
 timeout = 2  # Timeout for serial communication
 
 # Keyboard control directions and commands
-KEY_XM = 'f' #'s'
-KEY_XP = 's' #'f'
-KEY_YM = 'e' #'d'
-KEY_YP = 'd' #'e'
+# KEY_XM = 'f' #'s'
+# KEY_XP = 's' #'f'
+# KEY_YM = 'e' #'d'
+# KEY_YP = 'd' #'e'
 
-KEY_ZP = 'i'
-KEY_ZM = 'k'
+# KEY_ZP = 'i'
+# KEY_ZM = 'k'
 
-KEY_PITCHP = 'u'
-KEY_PITCHM = 'o'
-KEY_ROLLP = 'j'
-KEY_ROLLM = 'l'
-KEY_YAWP = 'm'
-KEY_YAWM = '.'
+# KEY_PITCHP = 'u'
+# KEY_PITCHM = 'o'
+# KEY_ROLLP = 'j'
+# KEY_ROLLM = 'l'
+# KEY_YAWP = 'm'
+# KEY_YAWM = '.'
 
-KEY_SPEEDP = 't'
-KEY_SPEEDM = 'g'
-KEY_ANGSPEEDP = 'y'
-KEY_ANGSPEEDM = 'h'
+# KEY_SPEEDP = 't'
+# KEY_SPEEDM = 'g'
+# KEY_ANGSPEEDP = 'y'
+# KEY_ANGSPEEDM = 'h'
 
 KEY_QUIT = 'q'
 
@@ -53,18 +53,18 @@ KEY_ROOF1 = "1" #house 1 (middle)
 KEY_ROOF2 = "2" #house 2 (right)
 KEY_ROOF3 = "3" #house 3 (left)
 
-KEY_ROOF_A = "A" #house 1 orientation 1
-KEY_ROOF_B = "B"
-KEY_ROOF_C = "C" #house 1 orientation 2
-KEY_ROOF_D = "D"
-KEY_ROOF_E = "E" #house 2 orientation 1
-KEY_ROOF_F = "F"
-KEY_ROOF_G = "G" #house 2 orientation 2
-KEY_ROOF_H = "H"
-KEY_ROOF_I = "I" #house 3 orientation 1
-KEY_ROOF_J = "J"
-KEY_ROOF_K = "K" #house 3 orientation 2
-KEY_ROOF_L = "L"
+KEY_ROOF_A = "a" #house 1 orientation 1
+KEY_ROOF_B = "b"
+KEY_ROOF_C = "c" #house 1 orientation 2
+KEY_ROOF_D = "d"
+KEY_ROOF_E = "e" #house 2 orientation 1
+KEY_ROOF_F = "f"
+KEY_ROOF_G = "g" #house 2 orientation 2
+KEY_ROOF_H = "h"
+KEY_ROOF_I = "i" #house 3 orientation 1
+KEY_ROOF_J = "j"
+KEY_ROOF_K = "k" #house 3 orientation 2
+KEY_ROOF_L = "l"
 
 KEY_PICKUP_ROOF = "0" #go to roof and pickup 
 
@@ -190,55 +190,55 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
     new_speed = speed
     new_increment = increment
     
-    if keyboard.is_pressed(KEY_XM):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
+    # if keyboard.is_pressed(KEY_XM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, -speed[0], -increment[0])
 
-    elif keyboard.is_pressed(KEY_XP):
-        new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
+    # elif keyboard.is_pressed(KEY_XP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 0, use_speed_control, speed[0], increment[0])
 
-    if keyboard.is_pressed(KEY_YP):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
+    # if keyboard.is_pressed(KEY_YP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, speed[0], increment[0])
 
-    elif keyboard.is_pressed(KEY_YM):
-        new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
+    # elif keyboard.is_pressed(KEY_YM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 1, use_speed_control, -speed[0], -increment[0])
 
-    if keyboard.is_pressed(KEY_ZP):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
+    # if keyboard.is_pressed(KEY_ZP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, speed[1], increment[1])
 
-    elif keyboard.is_pressed(KEY_ZM):
-        new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
+    # elif keyboard.is_pressed(KEY_ZM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 2, use_speed_control, -speed[1], -increment[1])
 
-    if keyboard.is_pressed(KEY_PITCHP):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_PITCHP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_PITCHM):
-        new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_PITCHM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 3, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_ROLLP):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_ROLLP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_ROLLM):
-        new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_ROLLM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 4, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_YAWP):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
+    # if keyboard.is_pressed(KEY_YAWP):
+    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, speed[2], increment[2])
 
-    elif keyboard.is_pressed(KEY_YAWM):
-        new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
+    # elif keyboard.is_pressed(KEY_YAWM):
+    #     new_setpoint = alter_setpoint(new_setpoint, 5, use_speed_control, -speed[2], -increment[2])
 
-    if keyboard.is_pressed(KEY_SPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+    # if keyboard.is_pressed(KEY_SPEEDP):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, SPEED_STEP_PLANE, INC_DELTA_PLANE)
         
-    elif keyboard.is_pressed(KEY_SPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+    # elif keyboard.is_pressed(KEY_SPEEDM):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 0, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 1, use_speed_control, -SPEED_STEP_PLANE, -INC_DELTA_PLANE)
 
-    if keyboard.is_pressed(KEY_ANGSPEEDP):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
+    # if keyboard.is_pressed(KEY_ANGSPEEDP):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, SPEED_STEP_ROT, INC_DELTA_ROT)
     
-    elif keyboard.is_pressed(KEY_ANGSPEEDM):
-        new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
+    # elif keyboard.is_pressed(KEY_ANGSPEEDM):
+    #     new_speed, new_increment = alter_setpoint_vel(new_speed, new_increment, 2, use_speed_control, -SPEED_STEP_ROT, -INC_DELTA_ROT)
     
     if keyboard.is_pressed(KEY_ROOF1):
         rtde_c.moveL(POS_1, SPEED_J, ACCEL_J, False)
@@ -302,7 +302,7 @@ def poll_keyboard(original_setpoint, use_speed_control, speed, increment):
                      z_move = z_move + 0.05 
                  else:
                      old_z = current_poseL_d[2]
-                     
+
             tofTargetPickUp = [c if i!= 2 else z_move for i,c in enumerate(current_poseL_d)]
             rtde_c.moveL(tofTargetPickUp, SPEED_L, ACCEL_L, False) #move down to good location above roof
             time.sleep(100) #before moving to next position 
